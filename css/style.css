@@ -1,0 +1,26 @@
+#map
+{
+    margin: auto;
+    border: 5px solid black;
+}
+
+#information {
+    width: 400px;
+}
+
+html, body {
+    height: 100%;
+}
+
+.leaflet-container { 
+    height: 800px;
+    width: 1200px;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+
+.setCoordonnees input {
+    width: 75px;
+}
