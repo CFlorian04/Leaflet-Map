@@ -35,24 +35,15 @@
 			<td><button id="addMarker">Ajouter</button></td>
 		</tr>
 	</table>
-	<button id="removeAllMarkers">Supprimer</button>
 
 </div>
 
 <div id="map" ></div>
 
 <script>
-	var userLatitude;
-	var userLongitude;
 
-	navigator.geolocation.getCurrentPosition(showPosition);
-	function showPosition(position)
-	{
-		userLatitude = position.coords.latitude;
-		userLongitude = position.coords.longitude;
-		console.log("lat : " + userLatitude + " / long : " + userLongitude);
-	}
-	var map = L.map('map').setView([userLatitude,userLongitude], 14);
+
+	var map = L.map('map').setView([48.8534951, 2.3483915], 14);
 
 	var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	maxZoom: 19,
@@ -65,9 +56,9 @@
 	{
 		var id;
 		if(markers.length == 0) {id = 0;}
-		else {id = markers[markers.length-1].id + 1;}
+		else {id = markers[markers.length-1]._id + 1;}
 		var popupContent =
-		'<button onclick="clearMarker(' + id + ')">Clear Marker</button>';
+		'<button onclick="clearMarker(' + id + ')">Supprimer</button>';
 		myMarker = L.marker(coords, {
 			draggable: false
 		});
@@ -75,26 +66,35 @@
 		var myPopup = myMarker.bindPopup(popupContent, {
 			closeButton: false
 		});
-		map.addLayer(myMarker);
+		window.map.addLayer(myMarker);
 		markers.push(myMarker);
 	}
 
-	addMarker([48.25,3.25]);
+	addMarker([48.8534951, 2.3483915]);
 
-	/*$("#addMarker").click( function(){
-		if($("#cooX").text() != null && $("cooY").text() != null)
+	function clearMarker(id) {
+	console.log(markers);
+	var new_markers = []
+	markers.forEach(function(marker) {
+		if (marker._id == id) {map.removeLayer(marker);}
+		else {new_markers.push(marker);}
+  	})
+  	markers = new_markers;
+	}
+
+	
+	$("#addMarker").click( function(){
+		if($("#cooX").val().length != 0 && $("#cooY").val().length != 0)
 		{
-			var coords = '[' + $("#cooX").val() + ',' + $("#cooY").val() + ']';
+			var coords = [];
+			coords.push($("#cooX").val());
+			coords.push($("#cooY").val());
 			console.log(coords);
 			addMarker(coords);
 		}
-	});*/
-
-	/*$('#removeAllMarkers').click( function(){
-		map.
 	});
-	
 
+	/*
 	var marker = L.marker([48.8534951, 2.3483915]).addTo(map);
 
 	var circle = L.circle([48.85, 2.34], {
