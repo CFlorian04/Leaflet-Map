@@ -1,7 +1,9 @@
+
+/*-----------------Carte----------------*/
 #map
 {
+    position: relative;
     margin: auto;
-    border: 5px solid black;
 }
 
 #information {
@@ -13,19 +15,42 @@ html, body {
 }
 
 .leaflet-container { 
-    height: 800px;
-    width: 1200px;
+    height: 100%;
+    width: 100%;
     max-width: 100%;
     max-height: 100%;
 }
-
-
 
 .setCoordonnees input {
     width: 75px;
 }
 
 
+.formBlock {
+    background-color: #FFF;
+    border: 1px solid #ddd;
+    position: absolute;
+    top: 30px;
+    padding: 10px;
+    z-index: 999;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    border-radius: 5px;
+    width: 100%;
+}
+
+.slide-menu {
+    max-width: 300px;
+    left : 30px;
+    top: 200px;
+
+}
+
+.routing {
+    max-width: 300px;
+    left: 30px;
+}
+
+/*-----------------Index----------------*/
 
 .container {
     display: flex;
