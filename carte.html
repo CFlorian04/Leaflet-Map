@@ -51,14 +51,14 @@
 	}).addTo(map);
 
 
-
-	const myRenderer = L.canvas({ padding: 0.5 });
+	//Affichage Feu Rouge (16e et 17e)
+	/*const myRenderer = L.canvas({ padding: 0.5 });
 	fetch("coord-feurouge.json").then(r => r.json()).then(r => {
 		r.forEach(coord => {
 			L.circleMarker([coord.lat, coord.lng], {renderer: myRenderer}).addTo(map);
 		});
 		});
-
+	*/
 
 	var markers = [];
 	map.on('click', function(e) {

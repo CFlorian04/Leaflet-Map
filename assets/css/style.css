@@ -118,3 +118,7 @@ table#pave td{
     color: #D8000C;
     background-color: #FFBABA;
 }
+
+.leaflet-control {
+    display: none;
+}
