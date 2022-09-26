@@ -150,11 +150,9 @@ $(
 			
 			if($("#username").val() != "")
 			{
-
 				var response = phpProcess("connexion");
 
 				$("p.erreur").css('visibility','hidden')
-				
 			}
 			else
 			{
