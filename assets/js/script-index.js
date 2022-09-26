@@ -79,14 +79,12 @@ $(
 
 		$( ".connexion" ).dialog({
 			autoOpen : false,
-			resizable: false,
-			draggable: false
-		});
+			resizable: false
+			});
 
 		$( ".inscription" ).dialog({
 			autoOpen : false,
-			resizable: false,
-			draggable: false
+			resizable: false
 		});
 
 		$("#logInOut").click(function() {
