@@ -1,125 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-	<meta charset="utf-8">
-		
-	<title>Leaflet Map</title>
-	
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
-	<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-	<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
-	<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Pavé de Connexion</title>
+
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-	<link rel="stylesheet" href="css/style.css" />
-	<!--<script src="js/script.js"></script>-->
-</head>
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/jquery-ui-1.9.2.custom.css">
+  	<link rel="stylesheet" href="assets/css/jquery-ui-1.9.2.custom.min.css">
+	<script type="text/javascript" src="assets/js/script-index.js"></script>
+	
+
 <body>
+	<div class="container">
+		<div class="main">
+			<button id="logInOut" class="ui-button ui-widget ui-corner-all">Connexion</button>
+			<p id="welcome"></p>
+			
 
-<div id="information">
-	<table>
-		<!--<tr>
-			<td><label>Point de départ :</label></td>
-			<td><input></td>
-			<td rowspan="2"><button>Echanger</button></td>
-		</tr>
-		<tr>
-			<td><label>Point de d'arrivé :</label></td>
-			<td><input></td>
-		</tr>-->
-		<tr>
-			<td><label>Ajouter marqueur :</label></td>
-			<td class="setCoordonnees"><input id="cooX" type="number"><input id="cooY" type="number"></td>
-			<td><button id="addMarker">Ajouter</button></td>
-		</tr>
-	</table>
+			<!--	Connexion		-->
+			<div id="dialog" class="connexion" title="Se Connecter">
+					<form id="connexionForm" action="process.php" method="POST">
+						<div id="info_perso">
+							<label>Username</label><input id="username" name="username" type="text">
+						</div>
+						
+						<table id="pave"></table>
+						
+						<div id="code">
+							<label>Code</label><input disabled type="text" name="code" value="">
+							<button type="button" id="relancer">Supprimer</button>
+						</div>
+						<hr>
+						<button id="envoyer_connexion" disabled>Connexion</button>
+					</form>
+					<p class="erreur"></p>
+			</div>
 
-</div>
+			<!--	S'inscrire		-->
+			<div id="dialog" class="inscription" title="S'inscrire">
+				<form id="inscriptionForm" action="process.php" method="POST">
+					<div id="info_perso">
+						<label>Username</label><input id="username_insc" name="username_insc" type="text">
+						<br>
+						<label>Email</label><input id="mail" name="email" type="mail">
+					</div>
+					
+					<div id="code">
+						<label>Code</label><input class="code_creation" name="code" type="text" value="">
+						<br>
+						<label>Confirmer</label><input class="code_creation" type="text" value="">
+					</div>
+					<hr>
+					<button id="envoyer_inscription" disabled>S'inscrire</button>
+				</form>
+				<p class="erreur"></p>
+			</div>
 
-<div id="map" ></div>
-
-<script>
-
-
-	var map = L.map('map').setView([48.8534951, 2.3483915], 14);
-
-	var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	maxZoom: 19,
-	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-	}).addTo(map);
-
-	var markers = [];
-
-	function addMarker(coords)
-	{
-		var id;
-		if(markers.length == 0) {id = 0;}
-		else {id = markers[markers.length-1]._id + 1;}
-		var popupContent =
-		'<button onclick="clearMarker(' + id + ')">Supprimer</button>';
-		myMarker = L.marker(coords, {
-			draggable: false
-		});
-		myMarker._id = id
-		var myPopup = myMarker.bindPopup(popupContent, {
-			closeButton: false
-		});
-		window.map.addLayer(myMarker);
-		markers.push(myMarker);
-	}
-
-	addMarker([48.8534951, 2.3483915]);
-
-	function clearMarker(id) {
-	console.log(markers);
-	var new_markers = []
-	markers.forEach(function(marker) {
-		if (marker._id == id) {map.removeLayer(marker);}
-		else {new_markers.push(marker);}
-  	})
-  	markers = new_markers;
-	}
-
-	
-	$("#addMarker").click( function(){
-		if($("#cooX").val().length != 0 && $("#cooY").val().length != 0)
-		{
-			var coords = [];
-			coords.push($("#cooX").val());
-			coords.push($("#cooY").val());
-			console.log(coords);
-			addMarker(coords);
-		}
-	});
-
-	
-	var marker = L.marker([48.8534951, 2.3483915]).addTo(map);
-
-	var circle = L.circle([48.85, 2.34], {
-    color: 'red',
-    fillColor: '#f03',
-    fillOpacity: 0.5,
-    radius: 100
-	}).addTo(map);
-
-	var polygon = L.polygon([
-    [48.8534951, 2.3483915],
-    [48.86, 2.35],
-    [48.85, 2.34]
-	]).addTo(map);
-
-	//marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
-
-	L.Routing.control({
-	waypoints: [
-	L.latLng(48.86, 2.35),
-	L.latLng(48.83, 2.33)
-	]
-	}).addTo(map);
-
-</script>
-
+		</div>
+	</div>
 </body>
 </html>
+
