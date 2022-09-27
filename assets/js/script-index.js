@@ -51,25 +51,38 @@ var tabObject;
 
 function phpProcess(formType)
 {
-	var elements;
+	let Datas = new FormData();
+	console.log($("#username").val());
+	Datas.append("username", $("#username").val());
+	Datas.append("code", $('#code input').val());
+	if(formType == "inscription")
+	{
+		//elements = "?username=" + $("#username_insc").val() + "&mail=" + $("#mail").val() + "&code=" + $(".code_creation").val();
+		Datas.append("mail", $("#mail").val());
+	}
+
+	//var elements;
+
+	/*
+	
+	/*
 	if(formType == "connexion")
 	{
+		
 		elements = "?username=" + $("#username").val() + "&code=" + $('#code input').val();
 	}
-	else if(formType == "inscription")
-	{
-		elements = "?username=" + $("#username_insc").val() + "&mail=" + $("#mail").val() + "&code=" + $(".code_creation").val();
-	}
 	
+	
+	*/
 	$.ajax({
-		url: "./process.php" + elements,
-		type : "GET",
-		data: {status: status, name: name},	
-		success : function(retour) {
-			//tabObject = JSON.parse(retour);
-			tabObject = retour
-			console.log(tabObject);
-		}	
+		url: "./process.php",
+		type : "POST",
+		data: Datas,
+		processData: false,
+    	contentType: false,
+		success:function(retour){
+			console.log(retour);
+		}
 	});
 }
 
@@ -153,7 +166,7 @@ $(
 
 				var response = phpProcess("connexion");
 
-				$("p.erreur").css('visibility','hidden')
+				$("p.erreur").css('visibility','hidden');
 				
 			}
 			else

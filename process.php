@@ -1,5 +1,6 @@
 <?php
 
+
 /*
     session_start();
     // Connexion a la BDD
@@ -9,18 +10,16 @@
     $password = 'mot_de_passe';
     $db = mysqli_connect ($hostname, $username, $password, $bdd);
 */
-$username = $_GET["username"];
-$code = $_GET["code"];
+$username = $_POST['username'];
+//$code = $_POST["code"];
 
-$txt = "La connexion est réussie !";
+echo("La connexion est réussie $username !");
 
-if(isset($_GET["mail"]))
+if(isset($_POST["mail"]))
 {
-    $mail = $_GET["mail"];
+    $mail = $_POST["mail"];
     $txt = "L'inscription est réussie !";
 }
 
-
-echo ($txt);
-
+//header("Location: /carte.html", TRUE, 301);
 ?>
