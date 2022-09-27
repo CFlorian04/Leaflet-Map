@@ -1,15 +1,15 @@
 <?php
 
 
-/*
-    session_start();
+
+    //session_start();
     // Connexion a la BDD
-    $bdd = 'nom_bdd';
-    $hostname = 'serveur';
-    $username = 'login';
-    $password = 'mot_de_passe';
+    $bdd = 'leaflet-map';
+    $hostname = 'localhost:3306';
+    $username = 'php_leaflet-map';
+    $password = 'BjbAh6sgFKpDx6Q';
     $db = mysqli_connect ($hostname, $username, $password, $bdd);
-*/
+
 $username = $_POST['username'];
 //$code = $_POST["code"];
 
