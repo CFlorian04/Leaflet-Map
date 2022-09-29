@@ -49,38 +49,6 @@ function attribution() {
 
 var tabObject;
 
-/**
- * Fonction chargé de la requête au serveur
- * @param {FormData()} Datas Données à envoyer
- * @param {Boolean} newUser Ajout de l'utilisateur si vrai
- */
-function phpProcess(Datas, newUser){
-	if(newUser){
-		$.ajax({
-			url: "./assets/php/process_Inscription.php",
-			type : "POST",
-			data: Datas,
-			processData: false,
-			contentType: false,
-			success:function(retour){
-				console.log(retour);
-			}
-		});
-	}else{
-		$.ajax({
-			url: "./process.php",
-			type : "POST",
-			data: Datas,
-			processData: false,
-			contentType: false,
-			success:function(retour){
-				console.log(retour);
-			}
-		});
-	}
-	
-}
-
 $(
 	function() {
 
@@ -190,6 +158,8 @@ $(
 			let code_create = $('.code#code_creation').val();
 			let code_confirm = $('.code#code_confirm').val();
 
+			let newUser = true;
+
 			let Datas = new FormData();
 			
 			if(username != "" && email != "")
@@ -200,8 +170,10 @@ $(
 					Datas.append("username", username);
 					Datas.append("code", code_create);
 					Datas.append("email", email);
+					Datas.append("newUser", newUser);
 
-					var response = phpProcess(Datas, true);
+					var response = phpProcess(Datas);
+					console.log(response);
 				}
 				else
 				{
@@ -226,3 +198,23 @@ $(
 
 	}
 );
+
+/**
+ * Fonction chargé de la requête au serveur
+ * @param {FormData()} Datas Données à envoyer
+ * @param {Boolean} newUser Ajout de l'utilisateur si vrai
+ */
+ function phpProcess(Datas){
+	
+	$.ajax({
+		url: "./assets/php/process_Inscription.php",
+		type : "POST",
+		data: Datas,
+		processData: false,
+		contentType: false,
+		success:function(retour){
+			return retour;
+		}
+	});
+	
+}

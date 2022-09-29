@@ -11,6 +11,7 @@
     $username = $_POST['username'];
     $email = $_POST['email'];
     $code = $_POST['code'];
+    $newUser = $_POST['newUser'];
 
     $bdd = 'leaflet-map';
     $hostname = '127.0.0.1:3306';
@@ -18,7 +19,6 @@
     $password = 'BjbAh6sgFKpDx6Q';
     
     try {
-        //connexion actuel avec root, création d'un utilisateur dédié à faire
         $pdo = new PDO("mysql:host=$hostname;dbname=$bdd", 
             "$user", 
             "$password", 
@@ -29,10 +29,20 @@
     }
     
 
-    //requête SQL, inscription du nouvel utilisateur
-    $stmt = $pdo->query("INSERT INTO `utilisateurs` (`Username`, `Code`, `Mail`) VALUES ('$username', '$code', '$email');");
+    if($newUser){
+        //requête SQL, inscription du nouvel utilisateur
+        
+        //$stmt = $pdo->query("INSERT INTO `utilisateurs` (`Username`, `Code`, `Mail`) VALUES ('$username', '$code', '$email');");
+        $sql = $pdo->query("SELECT * FROM `utilisateurs`");
+        foreach  ($sql as $row) {
+            echo ($row['Username'] . "\t" . $row['Code'] . "\t" . $row['Mail'] . "\n");
+        }
+    }else {
+        $stmt = $pdo->query("");
+    }
+    
 
-    echo("Inscription réussi");
+    
 
     //header("Location: /carte.html", TRUE, 301);
 ?>
