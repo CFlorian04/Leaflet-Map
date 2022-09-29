@@ -3,6 +3,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZ2liZ2FiIiwiYSI6ImNsOG11cDBhODBhZDQzdW9hYjF5b
 
 var markers = [];
 var vehicule = [];
+var feuTricolore = [];
 
 const map = new mapboxgl.Map({
     container: 'map',
@@ -26,14 +27,24 @@ $(
   }
 );
 
-async function addMarker(Coords)
+async function addMarker(Coords,type,table)
 {
     var id;
-    if(markers.length == 0) { id = 0; } 
+    if(markers.length == 0) { id = 0;} 
     else { id = markers[markers.length-1]._id + 1; }
-    myMarker = new mapboxgl.Marker().setLngLat(Coords).addTo(map);
+    var markerColor;
+    switch (type)
+    {
+      case 0 : markerColor = 'red'; break;
+      case 1 : markerColor = 'blue'; break;
+      case 2 : markerColor = 'green'; break;
+      case 3 : markerColor = 'yellow'; break;
+      default : markerColor = 'red'; break;
+    }
+    myMarker = new mapboxgl.Marker({color: markerColor}).setLngLat(Coords).addTo(map);
+
     myMarker._id = id;
-    markers.push(myMarker);
+    table.push(myMarker);
 }
 
 function getLastMarkersID() {
@@ -44,7 +55,7 @@ function getLastMarkersID() {
 map.on('click', (e) => {
   if($('#checkboxClickMap').is(':checked'))
   {
-    id = addMarker(e.lngLat.wrap());
+    id = addMarker(e.lngLat.wrap(),0,markers);
     isRoute();
   }
 });
@@ -54,9 +65,11 @@ function isRoute() {
 
   if(getLastMarkersID() % 2 == 1)
   {
-    console.log("Route créée !");
     getRoute(markers[getLastMarkersID()-1],markers[getLastMarkersID()]);
+    addVehicule(markers[getLastMarkersID()-1]);
   }
+
+
 
 }
 
@@ -109,9 +122,10 @@ else {
 // add turn instructions here at the end
 }
 
-function addVehicule() {
+function addVehicule(marker) {
 
-  let marker1 = new mapboxgl.Marker(el)
-  .setLngLat([-99, 30])
-  .addTo(map);
+  addMarker(marker._lngLat,1,vehicule);
+
+  //myMarker.setLngLat([-99, 30])
+
 }
