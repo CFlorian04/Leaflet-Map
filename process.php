@@ -14,6 +14,14 @@
     $db = mysqli_connect($hostname, $user, $password, $bdd);
     
 
+    $pdo = new PDO("mysql:host=$hostname;dbname=$bdd", 
+        $user, 
+        $password, 
+        array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION )
+    );
+
+    $stmt = $pdo->query('SELECT * FROM ');
+
 
     $username = $_POST['username'];
     //$code = $_POST["code"];
