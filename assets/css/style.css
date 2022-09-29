@@ -13,10 +13,6 @@ body
     width: 100%;
 }
 
-.mapbox-directions-instructions {
-    display: none;
-}
-
 /*-----------------Carte----------------*/
 
 #information {
@@ -31,9 +27,9 @@ html, body {
     background-color: #FFF;
     border: 1px solid #ddd;
     position: absolute;
-    max-width: 250px;
+    max-width: 300px;
     left: 30px;
-    top: 200px;
+    top: 30px;
     padding: 10px;
     z-index: 999;
     box-shadow: 0 1px 5px rgba(0,0,0,0.65);
