@@ -49,30 +49,37 @@ function attribution() {
 
 var tabObject;
 
-function phpProcess(formType)
-{
-	var elements;
-	if(formType == "connexion")
-	{
-		elements = "?username=" + $("#username").val() + "&code=" + $('#code input').val();
-	}
-	else if(formType == "inscription")
-	{
-		elements = "?username=" + $("#username_insc").val() + "&mail=" + $("#mail").val() + "&code=" + $(".code_creation").val();
+/**
+ * Fonction chargé de la requête au serveur
+ * @param {FormData()} Datas Données à envoyer
+ * @param {Boolean} newUser Ajout de l'utilisateur si vrai
+ */
+function phpProcess(Datas, newUser){
+	if(newUser){
+		$.ajax({
+			url: "./assets/php/process_Inscription.php",
+			type : "POST",
+			data: Datas,
+			processData: false,
+			contentType: false,
+			success:function(retour){
+				console.log(retour);
+			}
+		});
+	}else{
+		$.ajax({
+			url: "./process.php",
+			type : "POST",
+			data: Datas,
+			processData: false,
+			contentType: false,
+			success:function(retour){
+				console.log(retour);
+			}
+		});
 	}
 	
-	$.ajax({
-		url: "./process.php" + elements,
-		type : "GET",
-		data: {status: status, name: name},	
-		success : function(retour) {
-			//tabObject = JSON.parse(retour);
-			tabObject = retour
-			console.log(tabObject);
-		}	
-	});
 }
-
 
 $(
 	function() {
@@ -145,21 +152,6 @@ $(
 		});
 
 
-		$("#connexionForm").submit(function(event){
-			event.preventDefault(); //prevent default action
-			
-			if($("#username").val() != "")
-			{
-				var response = phpProcess("connexion");
-
-				$("p.erreur").css('visibility','hidden')
-			}
-			else
-			{
-				$("p.erreur").css('visibility','visible').text("Tous les champs ne sont pas remplis.");
-			}
-		});
-
 		$('.code_creation').change(function() {
 
 			if($('.code_creation').first().val() == $('.code_creation').last().val() && $('.code_creation').first().val() != "" && $('.code_creation').first().val().length == 4 )
@@ -173,20 +165,47 @@ $(
 
 		});
 
-		$("#inscriptionForm").submit(function(event){
+
+		$("#connexionForm").submit(function(event){
 			event.preventDefault(); //prevent default action
 			
-			if($("#username_insc").val() != "" && $("#mail").val() != "")
+			if($("#username").val() != "")
 			{
-				if($('.code_creation').first().val() == $('.code_creation').last().val() && $('.code_creation').first().val().length == 4)
+				var response = phpProcess("connexion");
+
+				$("p.erreur").css('visibility','hidden');
+				
+			}
+			else
+			{
+				$("p.erreur").css('visibility','visible').text("Tous les champs ne sont pas remplis.");
+			}
+		});
+
+		$("#inscriptionForm").submit(function(event){
+			event.preventDefault(); //prevent default action
+
+			let username = $("#username_insc").val();
+			let email = $("#mail_insc").val();
+			let code_create = $('.code#code_creation').val();
+			let code_confirm = $('.code#code_confirm').val();
+
+			let Datas = new FormData();
+			
+			if(username != "" && email != "")
+			{
+				if(code_create == code_confirm && code_create.length == 4)
 				{
-					$("p.erreur").css('visibility','hidden');
-					
-					var response = phpProcess("inscription");
+					$("p.erreur").css('visibility','hidden');//masque le message d'érreur
+					Datas.append("username", username);
+					Datas.append("code", code_create);
+					Datas.append("email", email);
+
+					var response = phpProcess(Datas, true);
 				}
 				else
 				{
-					$("p.erreur").css('visibility','visible').text("Le code ne peut contenir que 4 chiffres.");
+					$("p.erreur").css('visibility','visible').text("Le code ne peut contenir que 4 chiffres.");//affiche et configure le message d'érreur
 				}
 				
 			}
