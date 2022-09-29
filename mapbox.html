@@ -6,6 +6,7 @@
 		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 		<link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet">
 		<script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+		<link rel="stylesheet" href="assets/css/style.css" />
 		
 		
 	</head>
@@ -14,6 +15,26 @@
 		#map { position: absolute; top: 0; bottom: 0; width: 100%; }
 	</style>
 	<body>
+		<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+		<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" type="text/css">
+
+		<!--
+		<div class="formBlock routing">
+			
+			<h2>Ajouter un marqueur</h2>
+			<hr>
+			<label>Par un clique</label><input type="checkbox" id="checkboxClickMap">
+			<hr>
+			<form id="form">
+				<label>Par les coordonnées</label>
+				<br>
+				<label>Latitude</label><input id="cooX" type="number"><label>Longitude</label><input id="cooY" type="number">
+				<input type="button" id="addMarker" value="Ajouter">
+			</form>
+
+			<button onclick="resetMap()">Reset</button>
+		</div>
+		-->
 		<div id="map"></div>
 
 	
