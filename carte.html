@@ -14,112 +14,49 @@
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<link rel="stylesheet" href="assets/css/style.css" />
-	<script src="js/script.js"></script>
 </head>
 <body>
-
-<div id="information">
-	<table>
-		<!--<tr>
-			<td><label>Point de départ :</label></td>
-			<td><input></td>
-			<td rowspan="2"><button>Echanger</button></td>
-		</tr>
-		<tr>
-			<td><label>Point de d'arrivé :</label></td>
-			<td><input></td>
-		</tr>-->
-		<tr>
-			<td><label>Ajouter marqueur :</label></td>
-			<td class="setCoordonnees"><input id="cooX" type="number"><input id="cooY" type="number"></td>
-			<td><button id="addMarker">Ajouter</button></td>
-		</tr>
-	</table>
-
-</div>
-
-<div id="map" ></div>
-
-<script>
+	<div id="information">
+		<!--
+			<div class="formBlock routing">
+			<form id="form">
+				<input type="text" name="start" class="input" id="start" placeholder="Choisir le départ" />
+				<input type="text" name="end" class="input" id="destination" placeholder="Choisir la destination" />
+				<button type="submit">Calculer</button>
+			</form>
+		</div>
+		-->
 
 
-	var map = L.map('map').setView([48.8534951, 2.3483915], 14);
+		<div class="formBlock routing">
+			<h4>Ajouter un marqueur</h4>
+			<input type="checkbox" id="checkboxClickMap"><label>Via click</label>
+			<form id="form">
+				<input id="cooX" type="number"><input id="cooY" type="number">
+				<input type="button" id="addMarker" value="Ajouter">
+			</form>
+		</div>
 
-	var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	maxZoom: 19,
-	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-	}).addTo(map);
+	</div>
 
-	var markers = [];
-
-	function addMarker(coords)
-	{
-		var id;
-		if(markers.length == 0) {id = 0;}
-		else {id = markers[markers.length-1]._id + 1;}
-		var popupContent =
-		'<button onclick="clearMarker(' + id + ')">Supprimer</button>';
-		myMarker = L.marker(coords, {
-			draggable: false
-		});
-		myMarker._id = id
-		var myPopup = myMarker.bindPopup(popupContent, {
-			closeButton: false
-		});
-		window.map.addLayer(myMarker);
-		markers.push(myMarker);
-	}
-
-	addMarker([48.8534951, 2.3483915]);
-
-	function clearMarker(id) {
-	console.log(markers);
-	var new_markers = []
-	markers.forEach(function(marker) {
-		if (marker._id == id) {map.removeLayer(marker);}
-		else {new_markers.push(marker);}
-  	})
-  	markers = new_markers;
-	}
+	<!--
+	<div id="menu" class="formBlock slide-menu">
+		<nav>
+			<ul>
+				<li><a href=""></a>Test</li>
+				<li><a href=""></a>Test</li>
+				<li><a href=""></a>Test</li>
+			</ul>
+			
+		</nav>
+	</div>
+	-->
+	<div id="map" ></div>
 
 	
-	$("#addMarker").click( function(){
-		if($("#cooX").val().length != 0 && $("#cooY").val().length != 0)
-		{
-			var coords = [];
-			coords.push($("#cooX").val());
-			coords.push($("#cooY").val());
-			console.log(coords);
-			addMarker(coords);
-		}
-	});
-
-	
-	var marker = L.marker([48.8534951, 2.3483915]).addTo(map);
-
-	var circle = L.circle([48.85, 2.34], {
-    color: 'red',
-    fillColor: '#f03',
-    fillOpacity: 0.5,
-    radius: 100
-	}).addTo(map);
-
-	var polygon = L.polygon([
-    [48.8534951, 2.3483915],
-    [48.86, 2.35],
-    [48.85, 2.34]
-	]).addTo(map);
-
-	//marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
-
-	L.Routing.control({
-	waypoints: [
-	L.latLng(48.86, 2.35),
-	L.latLng(48.83, 2.33)
-	]
-	}).addTo(map);
-
-</script>
-
 </body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+	<script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"></script>
+	<script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"></script>
+	<script src="assets/js/script-carte.js"></script>
 </html>
