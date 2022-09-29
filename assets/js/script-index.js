@@ -49,43 +49,32 @@ function attribution() {
 
 var tabObject;
 
-function phpProcess(formType)
-{
-	let Datas = new FormData();
-	console.log($("#username").val());
-	Datas.append("username", $("#username").val());
-	Datas.append("code", $('#code input').val());
-	if(formType == "inscription")
-	{
-		//elements = "?username=" + $("#username_insc").val() + "&mail=" + $("#mail").val() + "&code=" + $(".code_creation").val();
-		Datas.append("mail", $("#mail").val());
+function phpProcess(Datas, newUser){
+	if(newUser){
+		$.ajax({
+			url: "./php/process_Inscription.php",
+			type : "POST",
+			data: Datas,
+			processData: false,
+			contentType: false,
+			success:function(retour){
+				console.log(retour);
+			}
+		});
+	}else{
+		$.ajax({
+			url: "./process.php",
+			type : "POST",
+			data: Datas,
+			processData: false,
+			contentType: false,
+			success:function(retour){
+				console.log(retour);
+			}
+		});
 	}
-
-	//var elements;
-
-	/*
 	
-	/*
-	if(formType == "connexion")
-	{
-		
-		elements = "?username=" + $("#username").val() + "&code=" + $('#code input').val();
-	}
-	
-	
-	*/
-	$.ajax({
-		url: "./process.php",
-		type : "POST",
-		data: Datas,
-		processData: false,
-    	contentType: false,
-		success:function(retour){
-			console.log(retour);
-		}
-	});
 }
-
 
 $(
 	function() {
@@ -158,6 +147,20 @@ $(
 		});
 
 
+		$('.code_creation').change(function() {
+
+			if($('.code_creation').first().val() == $('.code_creation').last().val() && $('.code_creation').first().val() != "" && $('.code_creation').first().val().length == 4 )
+			{
+				$('#envoyer_inscription').prop("disabled",false); 
+			}
+			else 
+			{
+				$('#envoyer_inscription').prop("disabled",true); 
+			}
+
+		});
+
+
 		$("#connexionForm").submit(function(event){
 			event.preventDefault(); //prevent default action
 			
@@ -174,33 +177,30 @@ $(
 			}
 		});
 
-		$('.code_creation').change(function() {
-
-			if($('.code_creation').first().val() == $('.code_creation').last().val() && $('.code_creation').first().val() != "" && $('.code_creation').first().val().length == 4 )
-			{
-				$('#envoyer_inscription').prop("disabled",false); 
-			}
-			else 
-			{
-				$('#envoyer_inscription').prop("disabled",true); 
-			}
-
-		});
-
 		$("#inscriptionForm").submit(function(event){
 			event.preventDefault(); //prevent default action
+
+			let username = $("#username_insc").val();
+			let email = $("#mail_insc").val();
+			let code_create = $('#code_creation').val();
+			let code_confirm = $('#code_confirm').val();
+
+			let Datas = new FormData();
 			
-			if($("#username_insc").val() != "" && $("#mail").val() != "")
+			if(username != "" && email != "")
 			{
-				if($('.code_creation').first().val() == $('.code_creation').last().val() && $('.code_creation').first().val().length == 4)
+				if(code_create == code_confirm && code_create.length == 4)
 				{
-					$("p.erreur").css('visibility','hidden');
-					
-					var response = phpProcess("inscription");
+					$("p.erreur").css('visibility','hidden');//masque le message d'érreur
+					Datas.append("username", username);
+					Datas.append("code", code_create);
+					Datas.append("mail", email);
+
+					var response = phpProcess(Datas, true);
 				}
 				else
 				{
-					$("p.erreur").css('visibility','visible').text("Le code ne peut contenir que 4 chiffres.");
+					$("p.erreur").css('visibility','visible').text("Le code ne peut contenir que 4 chiffres.");//affiche et configure le message d'érreur
 				}
 				
 			}

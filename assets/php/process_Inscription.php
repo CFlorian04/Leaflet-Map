@@ -21,12 +21,12 @@
 
     //connexion actuel avec root, création d'un utilisateur dédié à faire
     $pdo = new PDO("mysql:host=$hostname;dbname=$bdd", 
-        'root', 
-        '', 
+        '$user', 
+        '$password', 
         array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION )
     );
 
-    $stmt = $pdo->query("INSERT INTO `utilisateurs` (`nom`, `prenom`, `mail`) VALUES ('micucci', 'gabriel', 'gabriel@micucci.fr');");
+    $stmt = $pdo->query("INSERT INTO `utilisateurs` (`Username`, `Code`, `Mail`) VALUES ('$username', '$code', '$mail');");
 
     echo("true");
 

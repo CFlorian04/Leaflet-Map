@@ -21,7 +21,7 @@
 
 			<!--	Connexion		-->
 			<div id="dialog" class="connexion" title="Se Connecter">
-					<form id="connexionForm" action="process.php" method="POST">
+					<form id="connexionForm" action="php/process_Inscription.php" method="POST">
 						<div id="info_perso">
 							<label>Username</label><input id="username" name="username" type="text">
 						</div>
@@ -40,17 +40,17 @@
 
 			<!--	S'inscrire		-->
 			<div id="dialog" class="inscription" title="S'inscrire">
-				<form id="inscriptionForm" action="process_Inscription.php" method="POST">
+				<form id="inscriptionForm" action="php/process_Inscription.php" method="POST">
 					<div id="info_perso">
 						<label>Username</label><input id="username_insc" name="username_insc" type="text">
 						<br>
-						<label>Email</label><input id="mail" name="email" type="mail">
+						<label>Email</label><input id="mail_insc" name="email" type="mail">
 					</div>
 					
 					<div id="code">
 						<label>Code</label><input class="code_creation" name="code" type="text" value="">
 						<br>
-						<label>Confirmer</label><input class="code_creation" type="text" value="">
+						<label>Confirmer</label><input class="code_confirm" type="text" value="">
 					</div>
 					<hr>
 					<button id="envoyer_inscription" disabled>S'inscrire</button>
