@@ -1,5 +1,5 @@
 
-
+/*--------------MAPBOX------------*/
 body 
 {
     margin: 0; 
@@ -132,6 +132,3 @@ table#pave td{
     background-color: #FFBABA;
 }
 
-.leaflet-control {
-    display: none;
-}

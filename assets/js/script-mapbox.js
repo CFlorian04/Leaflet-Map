@@ -30,8 +30,8 @@ $(
 async function addMarker(Coords,type,table)
 {
     var id;
-    if(markers.length == 0) { id = 0;} 
-    else { id = markers[markers.length-1]._id + 1; }
+    if(table.length == 0) { id = 0;} 
+    else { id = table[table.length-1]._id + 1; }
     var markerColor;
     switch (type)
     {
@@ -41,14 +41,17 @@ async function addMarker(Coords,type,table)
       case 3 : markerColor = 'yellow'; break;
       default : markerColor = 'red'; break;
     }
-    myMarker = new mapboxgl.Marker({color: markerColor}).setLngLat(Coords).addTo(map);
 
+    myMarker = new mapboxgl.Marker({color: markerColor}).setLngLat(Coords).addTo(map);
     myMarker._id = id;
+
+    console.log(myMarker);
+
     table.push(myMarker);
 }
 
-function getLastMarkersID() {
-  return markers[markers.length-1]._id;
+function getLastMarkersTableID(table) {
+  return table[table.length-1]._id;
 }
 
 
@@ -63,10 +66,10 @@ map.on('click', (e) => {
 
 function isRoute() {
 
-  if(getLastMarkersID() % 2 == 1)
+  if(getLastMarkersTableID(markers) % 2 == 1)
   {
-    getRoute(markers[getLastMarkersID()-1],markers[getLastMarkersID()]);
-    addVehicule(markers[getLastMarkersID()-1]);
+    getRoute(markers[getLastMarkersTableID(markers)-1],markers[getLastMarkersTableID(markers)]);
+    addVehicule(markers[getLastMarkersTableID(markers)-1]);
   }
 
 
@@ -80,7 +83,7 @@ async function getRoute(start,end) {
 var routeCoords =  start._lngLat.lng + ',' + start._lngLat.lat + ';' + end._lngLat.lng + ',' + end._lngLat.lat ;
 
 const query = await fetch(
-  `https://api.mapbox.com/directions/v5/mapbox/driving/` + routeCoords + `?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+  `https://api.mapbox.com/directions/v5/mapbox/driving/` + routeCoords + `?steps=true&geometries=geojson&access_token=` + mapboxgl.accessToken,
   { method: 'GET' }
 );
 const json = await query.json();
@@ -113,7 +116,7 @@ else {
       'line-cap': 'round'
     },
     paint: {
-      'line-color': '#3887be',
+      'line-color': 'green',
       'line-width': 5,
       'line-opacity': 0.75
     }
@@ -125,7 +128,81 @@ else {
 function addVehicule(marker) {
 
   addMarker(marker._lngLat,1,vehicule);
-
-  //myMarker.setLngLat([-99, 30])
-
+  requestAnimationFrame(animateMarker);
 }
+
+
+/* MAPBOX GeoDecoder
+const coordinatesGeocoder = function (query) {
+  // Match anything which looks like
+  // decimal degrees coordinate pair.
+  const matches = query.match(
+  /^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i
+  );
+  if (!matches) {
+  return null;
+  }
+   
+  function coordinateFeature(lng, lat) {
+  return {
+  center: [lng, lat],
+  geometry: {
+  type: 'Point',
+  coordinates: [lng, lat]
+  },
+  place_name: 'Lat: ' + lat + ' Lng: ' + lng,
+  place_type: ['coordinate'],
+  properties: {},
+  type: 'Feature'
+  };
+  }
+   
+  const coord1 = Number(matches[1]);
+  const coord2 = Number(matches[2]);
+  const geocodes = [];
+   
+  if (coord1 < -90 || coord1 > 90) {
+  // must be lng, lat
+  geocodes.push(coordinateFeature(coord1, coord2));
+  }
+   
+  if (coord2 < -90 || coord2 > 90) {
+  // must be lat, lng
+  geocodes.push(coordinateFeature(coord2, coord1));
+  }
+   
+  if (geocodes.length === 0) {
+  // else could be either lng, lat or lat, lng
+  geocodes.push(coordinateFeature(coord1, coord2));
+  geocodes.push(coordinateFeature(coord2, coord1));
+  }
+   
+  return geocodes;
+  };
+
+
+
+map.addControl(
+  new MapboxGeocoder({
+  accessToken: mapboxgl.accessToken,
+  localGeocoder: coordinatesGeocoder,
+  zoom: 15,
+  placeholder: 'Try: -40, 170',
+  mapboxgl: mapboxgl,
+  reverseGeocode: true
+  })
+);
+*/
+
+/*
+function animateMarker(timestamp) {
+  const radius = 0.1;
+   
+  vehicule[0].setLngLat([
+  vehicule[0]._lngLat.lng + radius,
+  vehicule[0]._lngLat.lat + radius
+  ]);
+  vehicule[0].addTo(map);
+  requestAnimationFrame(animateMarker);
+  }
+  */
