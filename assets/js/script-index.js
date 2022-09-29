@@ -49,10 +49,15 @@ function attribution() {
 
 var tabObject;
 
+/**
+ * Fonction chargé de la requête au serveur
+ * @param {FormData()} Datas Données à envoyer
+ * @param {Boolean} newUser Ajout de l'utilisateur si vrai
+ */
 function phpProcess(Datas, newUser){
 	if(newUser){
 		$.ajax({
-			url: "./php/process_Inscription.php",
+			url: "./assets/php/process_Inscription.php",
 			type : "POST",
 			data: Datas,
 			processData: false,
@@ -182,8 +187,8 @@ $(
 
 			let username = $("#username_insc").val();
 			let email = $("#mail_insc").val();
-			let code_create = $('#code_creation').val();
-			let code_confirm = $('#code_confirm').val();
+			let code_create = $('.code#code_creation').val();
+			let code_confirm = $('.code#code_confirm').val();
 
 			let Datas = new FormData();
 			
@@ -194,7 +199,7 @@ $(
 					$("p.erreur").css('visibility','hidden');//masque le message d'érreur
 					Datas.append("username", username);
 					Datas.append("code", code_create);
-					Datas.append("mail", email);
+					Datas.append("email", email);
 
 					var response = phpProcess(Datas, true);
 				}

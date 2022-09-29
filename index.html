@@ -40,7 +40,7 @@
 
 			<!--	S'inscrire		-->
 			<div id="dialog" class="inscription" title="S'inscrire">
-				<form id="inscriptionForm" action="php/process_Inscription.php" method="POST">
+				<form id="inscriptionForm" method="POST">
 					<div id="info_perso">
 						<label>Username</label><input id="username_insc" name="username_insc" type="text">
 						<br>
@@ -48,9 +48,9 @@
 					</div>
 					
 					<div id="code">
-						<label>Code</label><input class="code_creation" name="code" type="text" value="">
+						<label>Code</label><input class="code" id="code_creation" type="text" value="">
 						<br>
-						<label>Confirmer</label><input class="code_confirm" type="text" value="">
+						<label>Confirmer</label><input class="code" id="code_confirm" type="text" value="">
 					</div>
 					<hr>
 					<button id="envoyer_inscription" disabled>S'inscrire</button>

@@ -8,7 +8,7 @@
      *  -> Risque de refus de connexion
      */  
 
-    $username = $_POST['username_insc'];
+    $username = $_POST['username'];
     $email = $_POST['email'];
     $code = $_POST['code'];
 
@@ -16,19 +16,23 @@
     $hostname = '127.0.0.1:3306';
     $user = 'php_leaflet-map';
     $password = 'BjbAh6sgFKpDx6Q';
-    //$db = mysqli_connect($hostname, $user, $password, $bdd);
+    
+    try {
+        //connexion actuel avec root, création d'un utilisateur dédié à faire
+        $pdo = new PDO("mysql:host=$hostname;dbname=$bdd", 
+            "$user", 
+            "$password", 
+            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION )
+        );
+    } catch (PDOException $th) {
+        echo $th;
+    }
     
 
-    //connexion actuel avec root, création d'un utilisateur dédié à faire
-    $pdo = new PDO("mysql:host=$hostname;dbname=$bdd", 
-        '$user', 
-        '$password', 
-        array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION )
-    );
+    //requête SQL, inscription du nouvel utilisateur
+    $stmt = $pdo->query("INSERT INTO `utilisateurs` (`Username`, `Code`, `Mail`) VALUES ('$username', '$code', '$email');");
 
-    $stmt = $pdo->query("INSERT INTO `utilisateurs` (`Username`, `Code`, `Mail`) VALUES ('$username', '$code', '$mail');");
-
-    echo("true");
+    echo("Inscription réussi");
 
     //header("Location: /carte.html", TRUE, 301);
 ?>
