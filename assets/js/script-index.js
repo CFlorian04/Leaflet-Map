@@ -217,7 +217,7 @@ $(
  function phpProcess(Datas){
 	
 	let requête = $.ajax({
-		url: "./assets/php/process_Inscription.php",
+		url: "./assets/php/process.php",
 		type : "POST",
 		data: Datas,
 		processData: false,
