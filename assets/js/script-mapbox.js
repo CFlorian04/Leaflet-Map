@@ -7,7 +7,7 @@ var feuTricolore = []; //Contient tous les marqueurs de feu tricolore
 var routeVehicule = []; //Contient toutes les coordonnées de routes pour chaque trajet
 var routeVehiculeDuration = []; //Contient toutes les durées relatives au coordonnées de routeVehicule[]
 var indexRoute = []; //Contient l'avancement de chaque trajet de chaque vehicule 
-var indexDuration = []; //Contient l'avancement de chaque durée relatives à l'avancement de indexRoute[]
+var indexDuration = []; //Contient chaque durée relatives à l'avancement de indexRoute[]
 var lastvehicule = null; //Contient l'ID du dernier marqueurs vehicule[]
 
 
@@ -21,8 +21,6 @@ const map = new mapboxgl.Map({
     optimizeForTerrain : true
 });
 
-
-
 $(
   function() {
 
@@ -35,6 +33,22 @@ $(
   }
 );
 
+
+//addFeuRouge();
+
+/*async function addFeuRouge() 
+{
+  const response = await fetch('././coord-feurouge.json');
+  const json = await response.json();
+  console.log(json); 
+
+  for(var i = 0; i < json.length; i++)
+  {
+    //console.log(json[i]);
+    //addMarker(json[i],3,feuTricolore);
+  }
+}*/
+
 //Permet d'ajouter un marqueur en indiquant ces coordonnées, son type de marqueurse et son tableau de destination
 async function addMarker(Coords,type,table)
 {
@@ -44,7 +58,7 @@ async function addMarker(Coords,type,table)
     else { id = table[table.length-1]._id + 1; }
 
     //Attribut le type de marqueur
-    var markerColor;
+    var attribut;
     switch (type)
     {
       case 0 : markerColor = 'red'; break;
@@ -56,7 +70,6 @@ async function addMarker(Coords,type,table)
 
     //Création du marqueur
     myMarker = new mapboxgl.Marker({color: markerColor}).setLngLat(Coords).addTo(map);
-    //console.log(myMarker);
     myMarker._id = id;
 
 
@@ -104,90 +117,86 @@ function isRoute() {
 //Permet de créer une route entre deux coordonnées
 async function getRoute(start,end) {
 
-var routeCoords =  start._lngLat.lng + ',' + start._lngLat.lat + ';' + end._lngLat.lng + ',' + end._lngLat.lat ;
+  var routeCoords =  start._lngLat.lng + ',' + start._lngLat.lat + ';' + end._lngLat.lng + ',' + end._lngLat.lat ;
 
-//Requete pour récupérer la route en deux coordonnées
-const query = await fetch(
-  `https://api.mapbox.com/directions/v5/mapbox/driving/` + routeCoords + `?steps=true&geometries=geojson&access_token=` + mapboxgl.accessToken,
-  { method: 'GET' }
-);
-const json = await query.json();
-const data = json.routes[0];
-console.log(data);
-const route = data.geometry.coordinates;
+  //Requete pour récupérer la route en deux coordonnées
+  const query = await fetch(
+    `https://api.mapbox.com/directions/v5/mapbox/driving/` + routeCoords + `?steps=true&geometries=geojson&access_token=` + mapboxgl.accessToken,
+    { method: 'GET' }
+  );
+  const json = await query.json();
+  const data = json.routes[0];
+  const route = data.geometry.coordinates;
 
-if(indexRoute[0] == null)
-{
-  lastvehicule = -1;
-}
-
-
-var duration = [];
-var trajet = [];
-
-//Récupère dans trajet[] chaque coordonnées de passage et dans duration[] les durées et nombre de passage par durée
-for(var i = 0; i< json.routes[0].legs[0].steps.length-1; i++)
-{
-
-  trajet.push(json.routes[0].legs[0].steps[i].geometry.coordinates);
-  duration.push([json.routes[0].legs[0].steps[i].duration,json.routes[0].legs[0].steps[i].geometry.coordinates.length]);
-}
-
-//Insère trajet[] et duration[] pour les relier avec leur vehicule respectif
-routeVehicule[lastvehicule + 1] = trajet;
-routeVehiculeDuration[lastvehicule +1] =  duration;
-console.log(routeVehicule[lastvehicule +1]);
-console.log(routeVehiculeDuration[lastvehicule +1]);
-
-
-//Création visuel de la route
-const geojson = {
-  type: 'Feature',
-  properties: {},
-  geometry: {
-    type: 'LineString',
-    coordinates: route
+  if(indexRoute[0] == null)
+  {
+    lastvehicule = -1;
   }
-};
-//console.log(geojson);
 
-// if the route already exists on the map, we'll reset it using setData
-if (map.getSource('route')) {
-  map.getSource('route').setData(geojson);
-}
-// otherwise, we'll make a new request
-else {
-  map.addLayer({
-    id: 'route',
-    type: 'line',
-    source: {
-      type: 'geojson',
-      data: geojson
-    },
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'butt'
-    },
-    paint: {
-      'line-color': 'red',
-      'line-width': 5,
-      'line-opacity': 1
+
+  var duration = [];
+  var trajet = [];
+
+  //Récupère dans trajet[] chaque coordonnées de passage et dans duration[] les durées et nombre de passage par durée
+  for(var i = 0; i< json.routes[0].legs[0].steps.length-1; i++)
+  {
+    for(var y = 0; y < json.routes[0].legs[0].steps[i].geometry.coordinates.length; y++)
+    {
+      trajet.push(json.routes[0].legs[0].steps[i].geometry.coordinates[y]);
+      duration.push(Math.floor(json.routes[0].legs[0].steps[i].duration));
     }
-  });
-}
-// add turn instructions here at the end
+    
+  }
 
-//Ajoute le marqueur vehicule sur les coordonnées du marqueur de départ
-addMarker(markers[getLastMarkersTableID(markers)-1]._lngLat,1,vehicule);
+  //Insère trajet[] et duration[] pour les relier avec leur vehicule respectif
+  routeVehicule[lastvehicule + 1] = trajet;
+  routeVehiculeDuration[lastvehicule +1] =  duration;
 
-lastvehicule = getLastMarkersTableID(vehicule);
-//console.log(vehicule);
-indexDuration[lastvehicule] = 0;
-indexRoute[lastvehicule] = 0;
+  //Création visuel de la route
+  const geojson = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'LineString',
+      coordinates: route
+    }
+  };
 
-requestAnimationFrame(animateMarker);
+  // if the route already exists on the map, we'll reset it using setData
+  if (map.getSource('route')) {
+    map.getSource('route').setData(geojson);
+  }
+  // otherwise, we'll make a new request
+  else {
+    map.addLayer({
+      id: 'route',
+      type: 'line',
+      source: {
+        type: 'geojson',
+        data: geojson
+      },
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'butt'
+      },
+      paint: {
+        'line-color': 'red',
+        'line-width': 5,
+        'line-opacity': 1
+      }
+    });
+  }
 
-return data;
+  //Ajoute le marqueur vehicule sur les coordonnées du marqueur de départ
+  addMarker(markers[getLastMarkersTableID(markers)-1]._lngLat,1,vehicule);
+
+  lastvehicule = getLastMarkersTableID(vehicule);
+  indexDuration[lastvehicule] = 0;
+  indexRoute[lastvehicule] = 0;
+
+  requestAnimationFrame(animateMarker);
+
+  return data;
 }
 
 
@@ -205,34 +214,44 @@ function animateMarker(timestamp) {
 function animateForEach(timestamp,idVehicule) {
 
   const vitesse = 0.000001;
-  var temps = Math.floor(timestamp/1000);
+  var temps = Math.floor(timestamp/100);
+  var end = false;
   
 
   if(temps > indexDuration[idVehicule])
   {
 
-    if(indexRoute[idVehicule] < routeVehicule[idVehicule].length)
+    if(indexRoute[idVehicule] < routeVehicule[idVehicule].length-1)
     {
-      for(var i = 0; i < routeVehicule[idVehicule][indexRoute[idVehicule]].length; i++)
+      var difCoordsY = (routeVehicule[idVehicule][indexRoute[idVehicule]][0]-routeVehicule[idVehicule][indexRoute[idVehicule]+1][0]);
+      var difCoordsX = (routeVehicule[idVehicule][indexRoute[idVehicule]][1]-routeVehicule[idVehicule][indexRoute[idVehicule]+1][1]);
+      
+      indexDuration[idVehicule] = temps /*+ routeVehiculeDuration[idVehicule][indexRoute[idVehicule]]*/;
+      if(difCoordsX != 0 || difCoordsY != 0)
       {
-        if(vehicule[idVehicule]._lngLat.lng != routeVehicule[idVehicule][indexRoute[idVehicule]][i][0] && vehicule[idVehicule]._lngLat.lat != routeVehicule[idVehicule][indexRoute[idVehicule]][i][1])
-        {
-          indexDuration[idVehicule] = temps;
+        var nb = Math.sqrt((difCoordsX*difCoordsX) + (difCoordsY*difCoordsY))*10000;
+        console.log(nb);
+        //var nb = (difCoordsX+difCoordsY)*10000;
 
-            /*RESOUDRE ROUTE BOUCLE DEPLACEMENT VEHICULE*/
-          console.log(routeVehicule[idVehicule][indexRoute[idVehicule]][i][0] + '/' + vehicule[idVehicule]._lngLat.lng);
-          vehicule[idVehicule].setLngLat(routeVehicule[idVehicule][indexRoute[idVehicule]][i]);
+        if(nb > 1 || nb < -1)
+        {
+          for(var z = 0; z < nb ; z++)
+          {
+            var partDifX = (difCoordsX/nb);
+            var partDifY = (difCoordsY/nb);
+            
+            vehicule[idVehicule].setLngLat([vehicule[idVehicule]._lngLat.lng - partDifY, vehicule[idVehicule]._lngLat.lat - partDifX]);
+            vehicule[idVehicule].addTo(map);
+          }
+        }
+        else
+        {
+          vehicule[idVehicule].setLngLat(routeVehicule[idVehicule][indexRoute[idVehicule]]);
           vehicule[idVehicule].addTo(map);
         }
-        else 
-        {
-          indexRoute[idVehicule] = indexRoute[idVehicule] + 1;
-          //console.log(indexRoute[idVehicule]  + '/' + routeVehicule[idVehicule].length);
-        }
       }
-
+      indexRoute[idVehicule] = indexRoute[idVehicule] + 1;
     }
-      
   }
   requestAnimationFrame(animateMarker); 
 
