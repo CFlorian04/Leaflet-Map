@@ -136,12 +136,24 @@ $(
 
 		$("#connexionForm").submit(function(event){
 			event.preventDefault(); //prevent default action
-			
-			if($("#username").val() != "")
-			{
-				var response = phpProcess("connexion");
 
-				$("p.erreur").css('visibility','hidden');
+			let username = $("#username_conn").val();
+
+			let newUser = false;
+
+			let Datas = new FormData();
+			
+			if($("#username").val() != "" && code != "") //la vérif du code a déjà eu lieu mais on sait jamais
+			{
+
+				$("p.erreur").css('visibility','hidden');//masque le message d'érreur
+
+				Datas.append("username", username);
+				Datas.append("code", code);
+				Datas.append("newUser", newUser);
+
+				phpProcess(Datas);
+				
 				
 			}
 			else
@@ -172,8 +184,7 @@ $(
 					Datas.append("email", email);
 					Datas.append("newUser", newUser);
 
-					var response = phpProcess(Datas);
-					console.log(response);
+					phpProcess(Datas);
 				}
 				else
 				{
@@ -202,7 +213,6 @@ $(
 /**
  * Fonction chargé de la requête au serveur
  * @param {FormData} Datas Données à envoyer
- * @param {Boolean} newUser Ajout de l'utilisateur si vrai
  */
  function phpProcess(Datas){
 	
@@ -214,10 +224,11 @@ $(
 		contentType: false,
 	});
 	requête.done(function(retour) {
-		console.log('fonction réussi ! retour: ' + retour);
-	});
-	requête.fail(function(erreur){
-
+		
+		if (retour == 23000){
+			alert("Identifiant ou adresse mail déjà utilisé !");
+		}
+		console.log('Retour : ' + retour);
 	});
 	
 }
