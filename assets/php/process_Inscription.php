@@ -31,9 +31,10 @@
 
     if($newUser){
         //requête SQL, inscription du nouvel utilisateur
-        
-        //$stmt = $pdo->query("INSERT INTO `utilisateurs` (`Username`, `Code`, `Mail`) VALUES ('$username', '$code', '$email');");
         $sql = $pdo->query("SELECT * FROM `utilisateurs`");
+
+        $stmt = $pdo->query("INSERT INTO `utilisateurs` (`Username`, `Code`, `Mail`) VALUES ('$username', '$code', '$email');");
+        
         foreach  ($sql as $row) {
             echo ($row['Username'] . "\t" . $row['Code'] . "\t" . $row['Mail'] . "\n");
         }

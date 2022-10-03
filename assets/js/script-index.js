@@ -120,9 +120,9 @@ $(
 		});
 
 
-		$('.code_creation').change(function() {
+		$('.code').change(function() {
 
-			if($('.code_creation').first().val() == $('.code_creation').last().val() && $('.code_creation').first().val() != "" && $('.code_creation').first().val().length == 4 )
+			if($('#code_creation').val() == $('#code_confirm').val() && $('#code_creation').val() != "" && $('#code_creation').val().length == 4 )
 			{
 				$('#envoyer_inscription').prop("disabled",false); 
 			}
@@ -201,20 +201,23 @@ $(
 
 /**
  * Fonction chargé de la requête au serveur
- * @param {FormData()} Datas Données à envoyer
+ * @param {FormData} Datas Données à envoyer
  * @param {Boolean} newUser Ajout de l'utilisateur si vrai
  */
  function phpProcess(Datas){
 	
-	$.ajax({
+	let requête = $.ajax({
 		url: "./assets/php/process_Inscription.php",
 		type : "POST",
 		data: Datas,
 		processData: false,
 		contentType: false,
-		success:function(retour){
-			return retour;
-		}
+	});
+	requête.done(function(retour) {
+		console.log('fonction réussi ! retour: ' + retour);
+	});
+	requête.fail(function(erreur){
+
 	});
 	
 }
