@@ -49,38 +49,6 @@ function attribution() {
 
 var tabObject;
 
-/**
- * Fonction chargé de la requête au serveur
- * @param {FormData()} Datas Données à envoyer
- * @param {Boolean} newUser Ajout de l'utilisateur si vrai
- */
-function phpProcess(Datas, newUser){
-	if(newUser){
-		$.ajax({
-			url: "./assets/php/process_Inscription.php",
-			type : "POST",
-			data: Datas,
-			processData: false,
-			contentType: false,
-			success:function(retour){
-				console.log(retour);
-			}
-		});
-	}else{
-		$.ajax({
-			url: "./process.php",
-			type : "POST",
-			data: Datas,
-			processData: false,
-			contentType: false,
-			success:function(retour){
-				console.log(retour);
-			}
-		});
-	}
-	
-}
-
 $(
 	function() {
 
@@ -152,9 +120,9 @@ $(
 		});
 
 
-		$('.code_creation').change(function() {
+		$('.code').change(function() {
 
-			if($('.code_creation').first().val() == $('.code_creation').last().val() && $('.code_creation').first().val() != "" && $('.code_creation').first().val().length == 4 )
+			if($('#code_creation').val() == $('#code_confirm').val() && $('#code_creation').val() != "" && $('#code_creation').val().length == 4 )
 			{
 				$('#envoyer_inscription').prop("disabled",false); 
 			}
@@ -167,13 +135,25 @@ $(
 
 
 		$("#connexionForm").submit(function(event){
-			event.preventDefault(); //prevent default action
-			
-			if($("#username").val() != "")
-			{
-				var response = phpProcess("connexion");
+			//event.preventDefault(); //prevent default action
 
-				$("p.erreur").css('visibility','hidden');
+			let username = $("#username_conn").val();
+
+			let newUser = false;
+
+			let Datas = new FormData();
+			
+			if($("#username").val() != "" && code != "") //la vérif du code a déjà eu lieu mais on sait jamais
+			{
+
+				$("p.erreur").css('visibility','hidden');//masque le message d'érreur
+
+				Datas.append("username", username);
+				Datas.append("code", code);
+				Datas.append("newUser", newUser);
+
+				phpProcess(Datas);
+				
 				
 			}
 			else
@@ -190,6 +170,8 @@ $(
 			let code_create = $('.code#code_creation').val();
 			let code_confirm = $('.code#code_confirm').val();
 
+			let newUser = true;
+
 			let Datas = new FormData();
 			
 			if(username != "" && email != "")
@@ -200,8 +182,9 @@ $(
 					Datas.append("username", username);
 					Datas.append("code", code_create);
 					Datas.append("email", email);
+					Datas.append("newUser", newUser);
 
-					var response = phpProcess(Datas, true);
+					phpProcess(Datas);
 				}
 				else
 				{
@@ -226,3 +209,26 @@ $(
 
 	}
 );
+
+/**
+ * Fonction chargé de la requête au serveur
+ * @param {FormData} Datas Données à envoyer
+ */
+ function phpProcess(Datas){
+	
+	let requête = $.ajax({
+		url: "./assets/php/process_Inscription.php",
+		type : "POST",
+		data: Datas,
+		processData: false,
+		contentType: false,
+	});
+	requête.done(function(retour) {
+		
+		if (retour == 23000){
+			alert("Identifiant ou adresse mail déjà utilisé !");
+		}
+		console.log('Retour : ' + retour);
+	});
+	
+}
