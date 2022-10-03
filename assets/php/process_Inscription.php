@@ -45,10 +45,11 @@
         $stmt = $pdo->query("SELECT `id` FROM `utilisateurs` WHERE `code` = $code AND `Username` = '$userName'");
         if(count($stmt->fetchAll()) > 0){//si au moins une occurence est trouvé
             echo "Connexion réussi !";
-            header('Location: ../../index.html');
+            header('Location: ../../mapbox.html');
+            exit();
         }else{
             echo "Connexion échoué !";
-            header('Location: #');
+            exit();
         } 
     }
     

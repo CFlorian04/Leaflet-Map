@@ -135,7 +135,7 @@ $(
 
 
 		$("#connexionForm").submit(function(event){
-			event.preventDefault(); //prevent default action
+			//event.preventDefault(); //prevent default action
 
 			let username = $("#username_conn").val();
 
