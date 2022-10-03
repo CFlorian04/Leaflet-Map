@@ -1,10 +1,19 @@
 
-/*-----------------Carte----------------*/
-#map
+/*--------------MAPBOX------------*/
+body 
 {
-    position: relative;
-    margin: auto;
+    margin: 0; 
+    padding: 0; 
 }
+#map 
+{ 
+    position: absolute; 
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+/*-----------------Carte----------------*/
 
 #information {
     width: 400px;
@@ -14,22 +23,12 @@ html, body {
     height: 100%;
 }
 
-.leaflet-container { 
-    height: 100%;
-    width: 100%;
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.setCoordonnees input {
-    width: 75px;
-}
-
-
 .formBlock {
     background-color: #FFF;
     border: 1px solid #ddd;
     position: absolute;
+    max-width: 300px;
+    left: 30px;
     top: 30px;
     padding: 10px;
     z-index: 999;
@@ -38,17 +37,6 @@ html, body {
     width: 100%;
 }
 
-.slide-menu {
-    max-width: 300px;
-    left : 30px;
-    top: 200px;
-
-}
-
-.routing {
-    max-width: 300px;
-    left: 30px;
-}
 
 /*-----------------Index----------------*/
 
@@ -144,6 +132,3 @@ table#pave td{
     background-color: #FFBABA;
 }
 
-.leaflet-control {
-    display: none;
-}

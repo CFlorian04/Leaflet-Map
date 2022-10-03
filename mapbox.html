@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Mapbox Map</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet">
+		<script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+		<link rel="stylesheet" href="assets/css/style.css" />
+		<!--Jquery-->
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<!--MAPBOX Directions-->
+		<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+		<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" type="text/css">
+		<!-- MAPBOX GeoDecoder-->
+		<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+		<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+		
+		
+	</head>
+	<style>
+		body { margin: 0; padding: 0; }
+		#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+	</style>
+	<body>
+
+
+		
+		<div class="formBlock routing">
+			
+			<h2>Ajouter un marqueur</h2>
+			<hr>
+			<label>Par un clique</label><input type="checkbox" id="checkboxClickMap">
+		<hr>
+			<form id="form">
+				<label>Par les coordonnées</label>
+				<br>
+				<label>Latitude</label><input id="cooX" type="number"><label>Longitude</label><input id="cooY" type="number">
+				<input type="button" id="addMarker" value="Ajouter">
+			</form>
+
+			<button onclick="resetMap()">Reset</button>
+		
+		</div>
+		
+		<div id="map"></div>
+
+	
+	</body>
+	<script src="assets/js/script-mapbox.js"></script>
+</html>
