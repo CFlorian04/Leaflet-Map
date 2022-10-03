@@ -14,12 +14,14 @@ var lastvehicule = null; //Contient l'ID du dernier marqueurs vehicule[]
 //Creation de la carte
 const map = new mapboxgl.Map({
     container: 'map',
+    //style: 'mapbox://styles/mapbox/satellite-streets-v11?optimize=true',
     style: 'mapbox://styles/gibgab/cl8mxqbqy00ai16piczjoxpmz?optimize=true', 
     center: [2.27587,48.85407], 
     zoom: 13, 
     projection: 'mercator', 
     optimizeForTerrain : true
 });
+
 
 $(
   function() {
