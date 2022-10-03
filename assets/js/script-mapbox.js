@@ -226,10 +226,11 @@ function animateForEach(timestamp,idVehicule) {
       var difCoordsY = (routeVehicule[idVehicule][indexRoute[idVehicule]][0]-routeVehicule[idVehicule][indexRoute[idVehicule]+1][0]);
       var difCoordsX = (routeVehicule[idVehicule][indexRoute[idVehicule]][1]-routeVehicule[idVehicule][indexRoute[idVehicule]+1][1]);
       
-      indexDuration[idVehicule] = temps /*+ routeVehiculeDuration[idVehicule][indexRoute[idVehicule]]*/;
+      
       if(difCoordsX != 0 || difCoordsY != 0)
       {
         var nb = Math.sqrt((difCoordsX*difCoordsX) + (difCoordsY*difCoordsY))*10000;
+        indexDuration[idVehicule] = temps + nb;
         if(nb > 1 || nb < -1)
         {
           for(var z = 0; z < nb ; z++)
@@ -247,6 +248,7 @@ function animateForEach(timestamp,idVehicule) {
           vehicule[idVehicule].addTo(map);
         }
       }
+
       indexRoute[idVehicule] = indexRoute[idVehicule] + 1;
     }
   }
