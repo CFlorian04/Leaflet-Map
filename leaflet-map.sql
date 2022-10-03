@@ -2,10 +2,10 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Sep 29, 2022 at 11:47 AM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 8.1.6
+-- Hôte : 127.0.0.1
+-- Généré le : lun. 03 oct. 2022 à 13:57
+-- Version du serveur : 10.4.24-MariaDB
+-- Version de PHP : 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,41 +18,52 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `leaflet-map`
+-- Base de données : `leaflet-map`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `utilisateurs`
+-- Structure de la table `utilisateurs`
 --
 
 CREATE TABLE `utilisateurs` (
   `id` int(11) NOT NULL,
-  `nom` tinytext NOT NULL,
-  `prenom` tinytext NOT NULL,
-  `mail` text NOT NULL
+  `CreationDate` datetime NOT NULL DEFAULT current_timestamp(),
+  `Username` tinytext NOT NULL,
+  `Code` char(4) DEFAULT NULL,
+  `Mail` tinytext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Indexes for dumped tables
+-- Déchargement des données de la table `utilisateurs`
+--
+
+INSERT INTO `utilisateurs` (`id`, `CreationDate`, `Username`, `Code`, `Mail`) VALUES
+(48, '2022-10-03 11:40:08', 'tutu', '6666', 'titi@toto.fr'),
+(49, '2022-10-03 11:58:16', 'toto', '2222', '');
+
+--
+-- Index pour les tables déchargées
 --
 
 --
--- Indexes for table `utilisateurs`
+-- Index pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `Mail` (`Mail`) USING HASH,
+  ADD UNIQUE KEY `Username` (`Username`) USING HASH;
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT pour les tables déchargées
 --
 
 --
--- AUTO_INCREMENT for table `utilisateurs`
+-- AUTO_INCREMENT pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
