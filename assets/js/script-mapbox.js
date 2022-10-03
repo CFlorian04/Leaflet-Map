@@ -232,7 +232,7 @@ function animateForEach(timestamp,idVehicule) {
       if(difCoordsX != 0 || difCoordsY != 0)
       {
         var nb = Math.sqrt((difCoordsX*difCoordsX) + (difCoordsY*difCoordsY))*10000;
-        indexDuration[idVehicule] = temps + nb;
+        indexDuration[idVehicule] = temps + nb/10;
         if(nb > 1 || nb < -1)
         {
           for(var z = 0; z < nb ; z++)
