@@ -35,22 +35,6 @@ $(
   }
 );
 
-
-//addFeuRouge();
-
-/*async function addFeuRouge() 
-{
-  const response = await fetch('././coord-feurouge.json');
-  const json = await response.json();
-  console.log(json); 
-
-  for(var i = 0; i < json.length; i++)
-  {
-    //console.log(json[i]);
-    //addMarker(json[i],3,feuTricolore);
-  }
-}*/
-
 //Permet d'ajouter un marqueur en indiquant ces coordonnées, son type de marqueurse et son tableau de destination
 async function addMarker(Coords,type,table)
 {
@@ -284,8 +268,6 @@ map.on('load', () => {
   source: 'earthquakes',
   filter: ['has', 'point_count'],
   paint: {
-  // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-  // with three steps to implement three types of circles:
   //   * Blue, 20px circles when point count is less than 100
   //   * Yellow, 30px circles when point count is between 100 and 750
   //   * Pink, 40px circles when point count is greater than or equal to 750
