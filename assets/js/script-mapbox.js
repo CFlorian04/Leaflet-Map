@@ -152,7 +152,7 @@ async function getRoute(start, end) {
     stepsDifCoords.push(difCoordsTotal);
     totalDifCoords += nb;
   }
-  duration["Duree"] = json.routes[0].duration / 10;
+  duration["Duree"] = json.routes[0].duration;
   duration["Distance"] = json.routes[0].distance;
   duration["totalDifCoords"] = totalDifCoords;
   duration["stepsDifCoords"] = stepsDifCoords;
@@ -175,30 +175,24 @@ async function getRoute(start, end) {
     }
   };
 
-  // if the route already exists on the map, we'll reset it using setData
-  if (map.getSource('route')) {
-    map.getSource('route').setData(geojson);
-  }
-  // otherwise, we'll make a new request
-  else {
-    map.addLayer({
-      id: 'route',
-      type: 'line',
-      source: {
-        type: 'geojson',
-        data: geojson
-      },
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'butt'
-      },
-      paint: {
-        'line-color': 'red',
-        'line-width': 5,
-        'line-opacity': 1
-      }
-    });
-  }
+
+  map.addLayer({
+    id: 'route' + lastvehicule,
+    type: 'line',
+    source: {
+      type: 'geojson',
+      data: geojson
+    },
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'butt'
+    },
+    paint: {
+      'line-color': 'red',
+      'line-width': 5,
+      'line-opacity': 1
+    }
+  });
 
   //Ajoute le marqueur vehicule sur les coordonnées du marqueur de départ
   addMarker(markers[getLastMarkersTableID(markers) - 1]._lngLat, "Voiture", vehicule);
@@ -219,70 +213,43 @@ function getDistance(lat1, lat2, lng1, lng2) {
 
 
 function animateMarker() {
-
   animateForEach(lastvehicule);
-
-  /*vehicule[lastvehicule].setLngLat(routeVehiculeSteps[lastvehicule][0]);
-  var numDeltas = 200;
-  var steps = 0;
-  var lng = routeVehiculeData[lastvehicule].stepsDifCoords[0].Longitude;
-  var lat = routeVehiculeData[lastvehicule].stepsDifCoords[0].Latitude;
-  var deltaLng = lng / numDeltas;
-  var deltaLat = lat / numDeltas;
-
-  angle = turf.rhumbBearing(turf.point(routeVehiculeSteps[lastvehicule][1]), turf.point([vehicule[lastvehicule]._lngLat.lng,vehicule[lastvehicule]._lngLat.lat]));
-  driveCar();
-
-  function driveCar() {
-    vehicule[lastvehicule].setLngLat([vehicule[lastvehicule]._lngLat.lng + deltaLng, vehicule[lastvehicule]._lngLat.lat + deltaLat]);
-    vehicule[lastvehicule].addTo(map);
-    updateMarkerDirection();
-    if (steps != numDeltas) {
-      steps++;
-      setTimeout(driveCar, 100);
-    }
-  };
-  
-  function updateMarkerDirection() {
-    var el = vehicule[lastvehicule].getElement();
-    var carDirection = angle - map.getBearing();
-    if (el.style.transform.includes("rotate")) {
-      el.style.transform = el.style.transform.replace(/rotate(.*)/, "rotate(" + carDirection + "deg)");
-    } else {
-      el.style.transform = el.style.transform + "rotate(" + carDirection + "deg)";
-    }
-  };
-*/
 }
 
 
+var numDeltas;
+var step;
+var lng;
+var lat;
+var deltaLat;
+var deltaLng;
+var angle;
+
 async function animateForEach(idVehicule) {
 
-  for (var i = 1; i < routeVehiculeSteps[idVehicule].length - 1; i++) {
+  for (var i = 0; i < routeVehiculeSteps[idVehicule].length - 1; i++) {
 
-    //console.log(i);
-    if (routeVehiculeData[idVehicule].stepsDifCoords[i - 0].Pourcentage > 0) {
+    if (routeVehiculeData[idVehicule].stepsDifCoords[i].Pourcentage > 0) {
       vehicule[idVehicule].setLngLat(routeVehiculeSteps[idVehicule][i]);
-      var numDeltas = routeVehiculeData[idVehicule].Duree * routeVehiculeData[idVehicule].stepsDifCoords[i - 1].Pourcentage;
-      //console.log(numDeltas)
-      var steps = 0;
-      var lng = routeVehiculeData[idVehicule].stepsDifCoords[i - 1].Longitude;
-      var lat = routeVehiculeData[idVehicule].stepsDifCoords[i - 1].Latitude;
-      var deltaLng = lng / numDeltas;
-      var deltaLat = lat / numDeltas;
+      numDeltas = routeVehiculeData[idVehicule].Duree * routeVehiculeData[idVehicule].stepsDifCoords[i].Pourcentage;
+      steps = 0;
+      lng = routeVehiculeData[idVehicule].stepsDifCoords[i].Longitude;
+      lat = routeVehiculeData[idVehicule].stepsDifCoords[i].Latitude;
+      deltaLng = lng / numDeltas;
+      deltaLat = lat / numDeltas;
 
-      var angle = turf.rhumbBearing(turf.point(routeVehiculeSteps[idVehicule][i]), turf.point([vehicule[idVehicule]._lngLat.lng, vehicule[idVehicule]._lngLat.lat]));
+      angle = turf.rhumbBearing(turf.point(routeVehiculeSteps[idVehicule][i+1]), turf.point([vehicule[idVehicule]._lngLat.lng, vehicule[idVehicule]._lngLat.lat]));
       driveCar();
 
       function driveCar() {
 
         vehicule[idVehicule].setLngLat([vehicule[idVehicule]._lngLat.lng + deltaLng, vehicule[idVehicule]._lngLat.lat + deltaLat]);
-        vehicule[idVehicule].addTo(map);
         updateMarkerDirection();
+        vehicule[idVehicule].addTo(map);
         if (steps < Math.floor(numDeltas) - 1) {
           steps++;
-          console.log("driveCar Timeout");
           setTimeout(driveCar, 100);
+          updateMarkerDirection();
         }
       };
 
@@ -312,13 +279,8 @@ const delay = (delayInms) => {
 /*CLUSTERS */
 
 map.on('load', () => {
-  // Add a new source from our GeoJSON data and
-  // set the 'cluster' option to true. GL-JS will
-  // add the point_count property to your source data.
-  map.addSource('earthquakes', {
+  map.addSource('tricolore', {
     type: 'geojson',
-    // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
-    // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
     data: '././signalisation-tricolore.geojson',
     cluster: true,
     clusterMaxZoom: 14, // Max zoom to cluster points on
@@ -328,7 +290,7 @@ map.on('load', () => {
   map.addLayer({
     id: 'clusters',
     type: 'circle',
-    source: 'earthquakes',
+    source: 'tricolore',
     filter: ['has', 'point_count'],
     paint: {
       //   * Blue, 20px circles when point count is less than 100
@@ -358,7 +320,7 @@ map.on('load', () => {
   map.addLayer({
     id: 'cluster-count',
     type: 'symbol',
-    source: 'earthquakes',
+    source: 'tricolore',
     filter: ['has', 'point_count'],
     layout: {
       'text-field': '{point_count_abbreviated}',
@@ -370,7 +332,7 @@ map.on('load', () => {
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
-    source: 'earthquakes',
+    source: 'tricolore',
     filter: ['!', ['has', 'point_count']],
     paint: {
       'circle-color': '#11b4da',
