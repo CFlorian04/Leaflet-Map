@@ -21,7 +21,7 @@
 
 			<!--	Connexion		-->
 			<div id="dialog" class="connexion" title="Se Connecter">
-					<form id="connexionForm" method="POST">
+					<form id="connexionForm" method="POST" action="./assets/php/process.php">
 						<div id="info_perso">
 							<label>Username</label><input id="username_conn" name="username" type="text">
 						</div>
@@ -29,11 +29,11 @@
 						<table id="pave"></table>
 						
 						<div id="code">
-							<label>Code</label><input disabled type="text" name="code" value="">
+							<label>Code</label><input autocomplete="off" name="code" type="text">
 							<button type="button" id="relancer">Supprimer</button>
 						</div>
 						<hr>
-						<button id="envoyer_connexion" disabled>Connexion</button>
+						<button type="submit" id="envoyer_connexion" disabled>Connexion</button>
 					</form>
 					<p class="erreur"></p>
 			</div>

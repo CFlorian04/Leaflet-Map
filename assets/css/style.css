@@ -103,6 +103,12 @@ div div div {
     width: 75%;
 }
 
+#code input {
+    pointer-events:none;
+    color:rgb(97, 87, 87);
+    background:#F5F5F5;
+}
+
 div#info_perso {
     width: 100%;
     text-align: center;
