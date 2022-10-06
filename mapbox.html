@@ -51,7 +51,13 @@
 
 		<h2>Ajouter un marqueur</h2>
 		<hr>
-		<label>Par un clique</label><input type="checkbox" id="checkboxClickMap">
+		<div class ="divswitch">
+			<p>Par un clique</p>
+			<label class="switch">
+				<input type="checkbox" id="checkboxClickMap">
+				<span class="slider round"></span>
+			</label>
+		</div>
 		<hr>
 		<form id="form">
 			<label>Par les coordonnées</label>
@@ -60,9 +66,11 @@
 				type="number">
 			<input type="button" id="addMarker" value="Ajouter">
 		</form>
-
-		<!--<button onclick="resetMap()">Reset</button>-->
-
+		<hr>
+		<div>
+			<button onclick="setClusters(0)">Data Feu 1</button>
+			<button onclick="setClusters(1)">Data Feu 2</button>
+		</div>
 	</div>
 
 	<div id="map"></div>
