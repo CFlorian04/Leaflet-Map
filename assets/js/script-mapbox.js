@@ -206,12 +206,6 @@ async function getRoute(start, end) {
 }
 
 
-function getDistance(lat1, lat2, lng1, lng2) {
-  var distance = 12756 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat1 - lat2) * Math.PI / 360), 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.pow(Math.sin((lng1 - lng2) * Math.PI / 360), 2)));
-  return distance;
-}
-
-
 function animateMarker() {
   animateForEach(lastvehicule);
 }
