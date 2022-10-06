@@ -76,7 +76,7 @@ function getLastMarkersTableID(table) {
 map.on('click', (e) => {
   if ($('#checkboxClickMap').is(':checked')) {
     addMarker(e.lngLat.wrap(), "", markers);
-    isRoute();
+    createRoute();
   }
 });
 
@@ -85,13 +85,13 @@ map.on('click', (e) => {
 $('#addMarker').on('click', (e) => {
   if ($('#cooX').val() != null && $('#cooX').val() >= -90 && $('#cooX').val() <= 90 && $('#cooY').val() != null && $('#cooY').val() >= -90 && $('#cooY').val() <= 90) {
     addMarker([$('#cooY').val(), $('#cooX').val()], "", markers);
-    isRoute();
+    createRoute();
   }
 });
 
 
 //Vérifie si le marqueur est le 2e sans route. Si oui création du route entre les deux derniers marqueurs
-function isRoute() {
+function createRoute() {
 
   if (getLastMarkersTableID(markers) % 2 == 1) {
     var routeData = getRoute(markers[getLastMarkersTableID(markers) - 1], markers[getLastMarkersTableID(markers)]);
@@ -127,13 +127,13 @@ async function getRoute(start, end) {
     for (var y = 0; y < json.routes[0].legs[0].steps[i].geometry.coordinates.length; y++) {
       trajet.push(json.routes[0].legs[0].steps[i].geometry.coordinates[y]);
     }
- 
+
   }
 
   //Récupère dans trajet[] chaque coordonnées de passage et dans duration[] les durées et nombre de passage par durée
- /* for (var i = 0; i < json.routes[0].geometry.coordinates.length - 1; i++) {
-    trajet.push(json.routes[0].geometry.coordinates[i]);
-  }*/
+  /* for (var i = 0; i < json.routes[0].geometry.coordinates.length - 1; i++) {
+     trajet.push(json.routes[0].geometry.coordinates[i]);
+   }*/
   routeVehiculeSteps[lastvehicule + 1] = trajet;
   console.log(routeVehiculeSteps[lastvehicule + 1]);
 
