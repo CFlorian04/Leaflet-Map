@@ -29,31 +29,31 @@
 						<table id="pave"></table>
 						
 						<div id="code">
-							<label>Code</label><input autocomplete="off" name="code" type="text">
+							<label>Code</label><input autocomplete="off" name="code" type="text" id="code_connect">
 							<button type="button" id="relancer">Supprimer</button>
 						</div>
 						<hr>
-						<button type="submit" id="envoyer_connexion" disabled>Connexion</button>
+						<button name="connection" type="submit" id="envoyer_connexion" disabled>Connexion</button>
 					</form>
 					<p class="erreur"></p>
 			</div>
 
 			<!--	S'inscrire		-->
 			<div id="dialog" class="inscription" title="S'inscrire">
-				<form id="inscriptionForm" method="POST">
+				<form id="inscriptionForm" method="POST" action="./assets/php/process.php">
 					<div id="info_perso">
-						<label>Username</label><input id="username_insc" name="username_insc" type="text">
+						<label>Username</label><input id="username_insc" name="username" type="text">
 						<br>
 						<label>Email</label><input id="mail_insc" name="email" type="mail">
 					</div>
 					
 					<div id="code">
-						<label>Code</label><input class="code" id="code_creation" type="text" value="">
+						<label>Code</label><input name="code" class="code" id="code_creation" type="text" value="">
 						<br>
-						<label>Confirmer</label><input class="code" id="code_confirm" type="text" value="">
+						<label>Confirmer</label><input name="code_confirm" class="code" id="code_confirm" type="text" value="">
 					</div>
 					<hr>
-					<button id="envoyer_inscription" disabled>S'inscrire</button>
+					<button name="inscription" id="envoyer_inscription" disabled>S'inscrire</button>
 				</form>
 				<p class="erreur"></p>
 			</div>

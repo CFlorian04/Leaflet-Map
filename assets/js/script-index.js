@@ -52,6 +52,14 @@ var tabObject;
 $(
 	function() {
 
+		//test le retour d'une érreur
+		$.get('./assets/php/session.php', function ( data ) {
+			if(data != ""){
+				alert(data);
+			}
+			
+		});
+
 		$( ".connexion" ).dialog({
 			autoOpen : false,
 			resizable: false
@@ -133,7 +141,7 @@ $(
 
 		});
 
-
+/*
 		$("#inscriptionForm").submit(function(event){
 			event.preventDefault(); //prevent default action
 
@@ -168,7 +176,7 @@ $(
 			{
 				$("p.erreur").css('visibility','visible').text("Tous les champs ne sont pas remplis.");
 			}	
-		});
+		});*/
 
 
 		$('#pave td').mouseover(function(){
@@ -203,30 +211,4 @@ $(
 		console.log('Retour : ' + retour);
 	});
 	
-}
-
-function buttonConnect() {
-	let username = $("#username_conn").val();
-
-	let newUser = false;
-
-	let Datas = new FormData();
-	
-	if($("#username").val() != "" && code != "") //la vérif du code a déjà eu lieu mais on sait jamais
-	{
-
-		$("p.erreur").css('visibility','hidden');//masque le message d'érreur
-
-		Datas.append("username", username);
-		Datas.append("code", code);
-		Datas.append("newUser", newUser);
-
-		phpProcess(Datas);
-		
-		
-	}
-	else
-	{
-		$("p.erreur").css('visibility','visible').text("Tous les champs ne sont pas remplis.");
-	}
 }

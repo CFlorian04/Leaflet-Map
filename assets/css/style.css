@@ -103,7 +103,7 @@ div div div {
     width: 75%;
 }
 
-#code input {
+#code_connect {
     pointer-events:none;
     color:rgb(97, 87, 87);
     background:#F5F5F5;
