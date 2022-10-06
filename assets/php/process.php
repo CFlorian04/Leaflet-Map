@@ -1,7 +1,5 @@
 <?php
 
-
-
     //session_start();
     /**Connexion a la BDD
      * /!\ Si paramètre serveur par défaut, la page doit être sur le même serveur que la BDD
@@ -10,7 +8,6 @@
 
     $userName = $_POST['username'];
     $code = $_POST['code'];
-    $newUser = $_POST['newUser'];
 
     $bdd = 'leaflet-map';
     $hostname = '127.0.0.1:3306';
@@ -28,7 +25,7 @@
     }
     
 
-    if($newUser != "false"){
+    if(isset($_POST['newUser']) && $_POST['newUser'] != "false"){
         $email = $_POST['email'];
         //requête SQL, inscription du nouvel utilisateur
         
@@ -44,7 +41,7 @@
     }else {
         $stmt = $pdo->query("SELECT `id` FROM `utilisateurs` WHERE `code` = $code AND `Username` = '$userName'");
         if(count($stmt->fetchAll()) > 0){//si au moins une occurence est trouvé
-            echo "Connexion réussi !";
+            header("Status: 301 Moved Permanently", false, 301);
             header('Location: ../../mapbox.html');
             exit();
         }else{
@@ -56,5 +53,5 @@
 
     
 
-    //header("Location: /carte.html", TRUE, 301);
+    header("Location: /carte.html", TRUE, 301);
 ?>

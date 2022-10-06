@@ -134,34 +134,6 @@ $(
 		});
 
 
-		$("#connexionForm").submit(function(event){
-			//event.preventDefault(); //prevent default action
-
-			let username = $("#username_conn").val();
-
-			let newUser = false;
-
-			let Datas = new FormData();
-			
-			if($("#username").val() != "" && code != "") //la vérif du code a déjà eu lieu mais on sait jamais
-			{
-
-				$("p.erreur").css('visibility','hidden');//masque le message d'érreur
-
-				Datas.append("username", username);
-				Datas.append("code", code);
-				Datas.append("newUser", newUser);
-
-				phpProcess(Datas);
-				
-				
-			}
-			else
-			{
-				$("p.erreur").css('visibility','visible').text("Tous les champs ne sont pas remplis.");
-			}
-		});
-
 		$("#inscriptionForm").submit(function(event){
 			event.preventDefault(); //prevent default action
 
@@ -224,11 +196,37 @@ $(
 		contentType: false,
 	});
 	requête.done(function(retour) {
-		
 		if (retour == 23000){
 			alert("Identifiant ou adresse mail déjà utilisé !");
+			
 		}
 		console.log('Retour : ' + retour);
 	});
 	
+}
+
+function buttonConnect() {
+	let username = $("#username_conn").val();
+
+	let newUser = false;
+
+	let Datas = new FormData();
+	
+	if($("#username").val() != "" && code != "") //la vérif du code a déjà eu lieu mais on sait jamais
+	{
+
+		$("p.erreur").css('visibility','hidden');//masque le message d'érreur
+
+		Datas.append("username", username);
+		Datas.append("code", code);
+		Datas.append("newUser", newUser);
+
+		phpProcess(Datas);
+		
+		
+	}
+	else
+	{
+		$("p.erreur").css('visibility','visible').text("Tous les champs ne sont pas remplis.");
+	}
 }
