@@ -21,12 +21,11 @@ var lastvehicule = null; //Contient l'ID du dernier marqueurs vehicule[]
 //Creation de la carte
 const map = new mapboxgl.Map({
   container: 'map',
-  //style: 'mapbox://styles/mapbox/satellite-streets-v11?optimize=true',
   style: 'mapbox://styles/gibgab/cl8mxqbqy00ai16piczjoxpmz?optimize=true',
-  center: [2.339576040473537,48.858435486415374],
+  center: [2.339576040473537, 48.858435486415374],
   zoom: 12,
   projection: 'mercator',
-  optimizeForTerrain: true
+  //optimizeForTerrain: true
 });
 
 
@@ -54,10 +53,10 @@ async function addMarker(Coords, type, table) {
 
   //Création du marqueur
   if (type != "Voiture") {
-    myMarker = new mapboxgl.Marker({ color: 'red' }).setLngLat(Coords).addTo(map);
+    myMarker = new mapboxgl.Marker({ color: 'red', anchor: 'center' , justify: 'center' }).setLngLat(Coords).addTo(map);
   }
   else if (type == "Voiture") {
-    myMarker = new mapboxgl.Marker(el).setLngLat(Coords).addTo(map);
+    myMarker = new mapboxgl.Marker(el, {anchor: 'center' , justify: 'center' }).setLngLat(Coords).addTo(map);
   }
 
   myMarker._id = id;
@@ -152,7 +151,7 @@ async function getRoute(start, end) {
     stepsDifCoords.push(difCoordsTotal);
     totalDifCoords += nb;
   }
-  duration["Duree"] = json.routes[0].duration ;
+  duration["Duree"] = json.routes[0].duration;
   duration["Distance"] = json.routes[0].distance;
   duration["totalDifCoords"] = totalDifCoords;
   duration["stepsDifCoords"] = stepsDifCoords;
@@ -221,18 +220,31 @@ var angle;
 
 async function animateForEach(idVehicule) {
 
-  for (var i = 0; i < routeVehiculeSteps[idVehicule].length - 1; i++) {
+
+  for (var i = 0; i < routeVehiculeSteps[idVehicule].length; i++) {
 
     if (routeVehiculeData[idVehicule].stepsDifCoords[i].Pourcentage > 0) {
       vehicule[idVehicule].setLngLat(routeVehiculeSteps[idVehicule][i]);
-      numDeltas = routeVehiculeData[idVehicule].Duree * routeVehiculeData[idVehicule].stepsDifCoords[i].Pourcentage;
+
+      console.log(i);
+      if(routeVehiculeSteps[idVehicule].length - 1 == i)
+      {
+        console.log("Last");
+        numDeltas = routeVehiculeData[idVehicule].Duree * routeVehiculeData[idVehicule].stepsDifCoords[i-1].Pourcentage;
+      }
+      else
+      {
+        console.log("Current");
+        numDeltas = routeVehiculeData[idVehicule].Duree * routeVehiculeData[idVehicule].stepsDifCoords[i].Pourcentage;
+      }
+
       steps = 0;
       lng = routeVehiculeData[idVehicule].stepsDifCoords[i].Longitude;
       lat = routeVehiculeData[idVehicule].stepsDifCoords[i].Latitude;
       deltaLng = lng / numDeltas;
       deltaLat = lat / numDeltas;
 
-      angle = turf.rhumbBearing(turf.point(routeVehiculeSteps[idVehicule][i+1]), turf.point([vehicule[idVehicule]._lngLat.lng, vehicule[idVehicule]._lngLat.lat]));
+      angle = turf.rhumbBearing(turf.point(routeVehiculeSteps[idVehicule][i + 1]), turf.point([vehicule[idVehicule]._lngLat.lng, vehicule[idVehicule]._lngLat.lat]));
       driveCar();
 
       function driveCar() {
@@ -240,7 +252,7 @@ async function animateForEach(idVehicule) {
         vehicule[idVehicule].setLngLat([vehicule[idVehicule]._lngLat.lng + deltaLng, vehicule[idVehicule]._lngLat.lat + deltaLat]);
         updateMarkerDirection();
         vehicule[idVehicule].addTo(map);
-        if (steps < Math.floor(numDeltas) - 1) {
+        if (steps < Math.floor(numDeltas)) {
           steps++;
           setTimeout(driveCar, 100);
           updateMarkerDirection();
@@ -248,13 +260,8 @@ async function animateForEach(idVehicule) {
       };
 
       function updateMarkerDirection() {
-        var el = vehicule[idVehicule].getElement();
-        var carDirection = angle - map.getBearing();
-        if (el.style.transform.includes("rotate")) {
-          el.style.transform = el.style.transform.replace(/rotate(.*)/, "rotate(" + carDirection + "deg)");
-        } else {
-          el.style.transform = el.style.transform + "rotate(" + carDirection + "deg)";
-        }
+        var carDirection = Math.floor(angle - map.getBearing());
+        vehicule[idVehicule].setRotation(carDirection);
       };
 
     }

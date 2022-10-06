@@ -1,6 +1,7 @@
 <?php
 
-
+header('Location: http://127.0.0.1:5500/mapbox.html');
+exit();
 
     //session_start();
     /**Connexion a la BDD
@@ -45,7 +46,7 @@
         $stmt = $pdo->query("SELECT `id` FROM `utilisateurs` WHERE `code` = $code AND `Username` = '$userName'");
         if(count($stmt->fetchAll()) > 0){//si au moins une occurence est trouvé
             echo "Connexion réussi !";
-            header('Location: ../../mapbox.html');
+            header('Location: http://127.0.0.1:5500/mapbox.html');
             exit();
         }else{
             echo "Connexion échoué !";
