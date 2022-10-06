@@ -16,6 +16,7 @@ var routeVehiculeSteps = []; //Contient toutes les coordonnées de routes pour c
 var indexRoute = []; //Contient l'avancement de chaque trajet de chaque vehicule 
 var routeVehiculeData = []; //Contient chaque durée relatives à l'avancement de indexRoute[]
 var lastvehicule = null; //Contient l'ID du dernier marqueurs vehicule[]
+var angle = []; //Contient les angles des voitures
 
 
 //Creation de la carte
@@ -72,26 +73,30 @@ function getLastMarkersTableID(table) {
   return table[table.length - 1]._id;
 }
 
+
 //Place un marqueur à l'endroit du clique si la case est cocher
 map.on('click', (e) => {
+
   if ($('#checkboxClickMap').is(':checked')) {
     addMarker(e.lngLat.wrap(), "", markers);
-    isRoute();
+    createRoute();
   }
+
 });
+
 
 
 //Place un marqueur avec ces coordonnées via le formulaire d'ajout
 $('#addMarker').on('click', (e) => {
   if ($('#cooX').val() != null && $('#cooX').val() >= -90 && $('#cooX').val() <= 90 && $('#cooY').val() != null && $('#cooY').val() >= -90 && $('#cooY').val() <= 90) {
     addMarker([$('#cooY').val(), $('#cooX').val()], "", markers);
-    isRoute();
+    createRoute();
   }
 });
 
 
 //Vérifie si le marqueur est le 2e sans route. Si oui création du route entre les deux derniers marqueurs
-function isRoute() {
+function createRoute() {
 
   if (getLastMarkersTableID(markers) % 2 == 1) {
     var routeData = getRoute(markers[getLastMarkersTableID(markers) - 1], markers[getLastMarkersTableID(markers)]);
@@ -127,13 +132,13 @@ async function getRoute(start, end) {
     for (var y = 0; y < json.routes[0].legs[0].steps[i].geometry.coordinates.length; y++) {
       trajet.push(json.routes[0].legs[0].steps[i].geometry.coordinates[y]);
     }
- 
+
   }
 
   //Récupère dans trajet[] chaque coordonnées de passage et dans duration[] les durées et nombre de passage par durée
- /* for (var i = 0; i < json.routes[0].geometry.coordinates.length - 1; i++) {
-    trajet.push(json.routes[0].geometry.coordinates[i]);
-  }*/
+  /* for (var i = 0; i < json.routes[0].geometry.coordinates.length - 1; i++) {
+     trajet.push(json.routes[0].geometry.coordinates[i]);
+   }*/
   routeVehiculeSteps[lastvehicule + 1] = trajet;
   console.log(routeVehiculeSteps[lastvehicule + 1]);
 
@@ -218,7 +223,6 @@ var lng;
 var lat;
 var deltaLat;
 var deltaLng;
-var angle;
 
 async function animateForEach(idVehicule) {
 
@@ -240,32 +244,29 @@ async function animateForEach(idVehicule) {
       deltaLng = lng / numDeltas;
       deltaLat = lat / numDeltas;
 
-      angle = turf.rhumbBearing(turf.point(routeVehiculeSteps[idVehicule][i + 1 - last]), turf.point(routeVehiculeSteps[idVehicule][i - last]));
+      angle[idVehicule] = turf.rhumbBearing(turf.point(routeVehiculeSteps[idVehicule][i + 1 - last]), turf.point(routeVehiculeSteps[idVehicule][i - last]));
       driveCar();
 
       function driveCar() {
 
         vehicule[idVehicule].setLngLat([vehicule[idVehicule]._lngLat.lng + deltaLng, vehicule[idVehicule]._lngLat.lat + deltaLat]);
-        updateMarkerDirection();
         vehicule[idVehicule].addTo(map);
         if (steps < Math.floor(numDeltas)) {
           steps++;
           setTimeout(driveCar, 100);
-          updateMarkerDirection();
+          updateMarkerDirection(angle[idVehicule]);
         }
       };
 
-      function updateMarkerDirection() {
+      function updateMarkerDirection(angle) {
         var carDirection = Math.floor(angle - map.getBearing());
         vehicule[idVehicule].setRotation(carDirection);
       };
 
     }
-    await delay(100 * numDeltas);
+    await delay(100 * Math.floor(numDeltas));
     indexRoute[idVehicule]++;
   }
-
-
 }
 
 const delay = (delayInms) => {
@@ -273,12 +274,42 @@ const delay = (delayInms) => {
 }
 
 
+async function getTricolore(datafeu) {
+
+  const query = await fetch( datafeu,{ method: 'GET' });
+  const json = await query.json();
+
+  feuTricolore = json;
+}
+
+
 /*CLUSTERS FEU TRICOLORE */
 
 map.on('load', () => {
+  setClusters(0);
+});
+
+function setClusters(type) {
+
+  var datafeu;
+  switch (type) {
+    case 0: datafeu = '././signalisation-tricolore.geojson'; break;
+    case 1: datafeu = '././signalisation-tricolore2.geojson'; break;
+  }
+  
+  if(map.getSource('tricolore'))
+  {
+    map.removeLayer('clusters');
+    map.removeLayer('cluster-count');
+    map.removeLayer('unclustered-point');
+    map.removeSource('tricolore');
+  }
+
+  getTricolore(datafeu);
+
   map.addSource('tricolore', {
     type: 'geojson',
-    data: '././signalisation-tricolore.geojson',
+    data: datafeu,
     cluster: true,
     clusterMaxZoom: 14, // Max zoom to cluster points on
     clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
@@ -338,4 +369,4 @@ map.on('load', () => {
       'circle-stroke-color': '#000'
     }
   });
-});
+}
