@@ -23,8 +23,8 @@ const map = new mapboxgl.Map({
   container: 'map',
   //style: 'mapbox://styles/mapbox/satellite-streets-v11?optimize=true',
   style: 'mapbox://styles/gibgab/cl8mxqbqy00ai16piczjoxpmz?optimize=true',
-  center: [2.27587, 48.85407],
-  zoom: 13,
+  center: [2.339576040473537,48.858435486415374],
+  zoom: 12,
   projection: 'mercator',
   optimizeForTerrain: true
 });
@@ -152,7 +152,7 @@ async function getRoute(start, end) {
     stepsDifCoords.push(difCoordsTotal);
     totalDifCoords += nb;
   }
-  duration["Duree"] = json.routes[0].duration;
+  duration["Duree"] = json.routes[0].duration ;
   duration["Distance"] = json.routes[0].distance;
   duration["totalDifCoords"] = totalDifCoords;
   duration["stepsDifCoords"] = stepsDifCoords;
@@ -335,10 +335,10 @@ map.on('load', () => {
     source: 'tricolore',
     filter: ['!', ['has', 'point_count']],
     paint: {
-      'circle-color': '#11b4da',
+      'circle-color': '#b22222',
       'circle-radius': 4,
-      'circle-stroke-width': 1,
-      'circle-stroke-color': '#fff'
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#000'
     }
   });
 });
