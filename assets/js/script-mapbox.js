@@ -21,12 +21,11 @@ var lastvehicule = null; //Contient l'ID du dernier marqueurs vehicule[]
 //Creation de la carte
 const map = new mapboxgl.Map({
   container: 'map',
-  //style: 'mapbox://styles/mapbox/satellite-streets-v11?optimize=true',
   style: 'mapbox://styles/gibgab/cl8mxqbqy00ai16piczjoxpmz?optimize=true',
-  center: [2.27587, 48.85407],
-  zoom: 13,
+  center: [2.339576040473537, 48.858435486415374],
+  zoom: 12,
   projection: 'mercator',
-  optimizeForTerrain: true
+  //optimizeForTerrain: true
 });
 
 
@@ -54,10 +53,10 @@ async function addMarker(Coords, type, table) {
 
   //Création du marqueur
   if (type != "Voiture") {
-    myMarker = new mapboxgl.Marker({ color: 'red' }).setLngLat(Coords).addTo(map);
+    myMarker = new mapboxgl.Marker({ color: 'red', anchor: 'center', justify: 'center' }).setLngLat(Coords).addTo(map);
   }
   else if (type == "Voiture") {
-    myMarker = new mapboxgl.Marker(el).setLngLat(Coords).addTo(map);
+    myMarker = new mapboxgl.Marker(el, { anchor: 'center', justify: 'center' }).setLngLat(Coords).addTo(map);
   }
 
   myMarker._id = id;
@@ -124,17 +123,17 @@ async function getRoute(start, end) {
   var trajet = [];
 
 
-  /*for (var i = 0; i < json.routes[0].legs[0].steps.length - 1; i++) {
+  for (var i = 0; i < json.routes[0].legs[0].steps.length - 1; i++) {
     for (var y = 0; y < json.routes[0].legs[0].steps[i].geometry.coordinates.length; y++) {
       trajet.push(json.routes[0].legs[0].steps[i].geometry.coordinates[y]);
     }
  
-  }*/
+  }
 
   //Récupère dans trajet[] chaque coordonnées de passage et dans duration[] les durées et nombre de passage par durée
-  for (var i = 0; i < json.routes[0].geometry.coordinates.length - 1; i++) {
+ /* for (var i = 0; i < json.routes[0].geometry.coordinates.length - 1; i++) {
     trajet.push(json.routes[0].geometry.coordinates[i]);
-  }
+  }*/
   routeVehiculeSteps[lastvehicule + 1] = trajet;
   console.log(routeVehiculeSteps[lastvehicule + 1]);
 
@@ -197,18 +196,14 @@ async function getRoute(start, end) {
   //Ajoute le marqueur vehicule sur les coordonnées du marqueur de départ
   addMarker(markers[getLastMarkersTableID(markers) - 1]._lngLat, "Voiture", vehicule);
 
+  //Initialise les valeurs du vehicule;
   lastvehicule = getLastMarkersTableID(vehicule);
   indexRoute[lastvehicule] = 0;
 
+  //Lance l'animation de la voiture
   requestAnimationFrame(animateMarker);
 
   return data;
-}
-
-
-function getDistance(lat1, lat2, lng1, lng2) {
-  var distance = 12756 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat1 - lat2) * Math.PI / 360), 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.pow(Math.sin((lng1 - lng2) * Math.PI / 360), 2)));
-  return distance;
 }
 
 
@@ -227,18 +222,25 @@ var angle;
 
 async function animateForEach(idVehicule) {
 
-  for (var i = 0; i < routeVehiculeSteps[idVehicule].length - 1; i++) {
 
-    if (routeVehiculeData[idVehicule].stepsDifCoords[i].Pourcentage > 0) {
+  for (var i = 0; i < routeVehiculeSteps[idVehicule].length; i++) {
+
+    var last = 0;
+    if (routeVehiculeSteps[idVehicule].length - 1 == i) {
+      last = 1;
+    }
+    if (routeVehiculeData[idVehicule].stepsDifCoords[i - last].Pourcentage > 0) {
       vehicule[idVehicule].setLngLat(routeVehiculeSteps[idVehicule][i]);
-      numDeltas = routeVehiculeData[idVehicule].Duree * routeVehiculeData[idVehicule].stepsDifCoords[i].Pourcentage;
+
+      numDeltas = routeVehiculeData[idVehicule].Duree * routeVehiculeData[idVehicule].stepsDifCoords[i - last].Pourcentage;
+
       steps = 0;
-      lng = routeVehiculeData[idVehicule].stepsDifCoords[i].Longitude;
-      lat = routeVehiculeData[idVehicule].stepsDifCoords[i].Latitude;
+      lng = routeVehiculeData[idVehicule].stepsDifCoords[i - last].Longitude;
+      lat = routeVehiculeData[idVehicule].stepsDifCoords[i - last].Latitude;
       deltaLng = lng / numDeltas;
       deltaLat = lat / numDeltas;
 
-      angle = turf.rhumbBearing(turf.point(routeVehiculeSteps[idVehicule][i+1]), turf.point([vehicule[idVehicule]._lngLat.lng, vehicule[idVehicule]._lngLat.lat]));
+      angle = turf.rhumbBearing(turf.point(routeVehiculeSteps[idVehicule][i + 1 - last]), turf.point(routeVehiculeSteps[idVehicule][i - last]));
       driveCar();
 
       function driveCar() {
@@ -246,7 +248,7 @@ async function animateForEach(idVehicule) {
         vehicule[idVehicule].setLngLat([vehicule[idVehicule]._lngLat.lng + deltaLng, vehicule[idVehicule]._lngLat.lat + deltaLat]);
         updateMarkerDirection();
         vehicule[idVehicule].addTo(map);
-        if (steps < Math.floor(numDeltas) - 1) {
+        if (steps < Math.floor(numDeltas)) {
           steps++;
           setTimeout(driveCar, 100);
           updateMarkerDirection();
@@ -254,13 +256,8 @@ async function animateForEach(idVehicule) {
       };
 
       function updateMarkerDirection() {
-        var el = vehicule[idVehicule].getElement();
-        var carDirection = angle - map.getBearing();
-        if (el.style.transform.includes("rotate")) {
-          el.style.transform = el.style.transform.replace(/rotate(.*)/, "rotate(" + carDirection + "deg)");
-        } else {
-          el.style.transform = el.style.transform + "rotate(" + carDirection + "deg)";
-        }
+        var carDirection = Math.floor(angle - map.getBearing());
+        vehicule[idVehicule].setRotation(carDirection);
       };
 
     }
@@ -276,7 +273,7 @@ const delay = (delayInms) => {
 }
 
 
-/*CLUSTERS */
+/*CLUSTERS FEU TRICOLORE */
 
 map.on('load', () => {
   map.addSource('tricolore', {
@@ -335,10 +332,10 @@ map.on('load', () => {
     source: 'tricolore',
     filter: ['!', ['has', 'point_count']],
     paint: {
-      'circle-color': '#11b4da',
+      'circle-color': '#b22222',
       'circle-radius': 4,
-      'circle-stroke-width': 1,
-      'circle-stroke-color': '#fff'
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#000'
     }
   });
 });
